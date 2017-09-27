@@ -1,1 +1,1 @@
-# ios-VirtualTourist
+# VirtualTourist
