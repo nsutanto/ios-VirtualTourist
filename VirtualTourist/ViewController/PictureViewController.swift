@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  PictureViewController.swift
 //  VirtualTourist
 //
 //  Created by Nicholas Sutanto on 9/29/17.
@@ -7,19 +7,20 @@
 //
 
 import UIKit
+import MapKit
 
-class ViewController: UIViewController {
-
+class PictureViewController: UIViewController {
+    
+    @IBOutlet weak var buttonPictureAction: UIButton!
+    @IBOutlet weak var mapView: MKMapView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func performPictureAction(_ sender: Any) {
+    
     }
-
-
 }
 
