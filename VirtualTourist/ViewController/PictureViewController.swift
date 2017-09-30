@@ -7,11 +7,20 @@
 //
 
 import UIKit
+import MapKit
 
 class PictureViewController: UIViewController {
+    
+    @IBOutlet weak var buttonPictureAction: UIButton!
+    @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
+    
+    @IBAction func performPictureAction(_ sender: Any) {
+    
+    }
 }
+
