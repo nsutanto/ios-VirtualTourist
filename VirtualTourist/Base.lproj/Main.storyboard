@@ -24,20 +24,40 @@
                                     <outletCollection property="gestureRecognizers" destination="XHg-Bd-TPL" appends="YES" id="fx2-iS-NIa"/>
                                 </connections>
                             </mapView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pins to Delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nFv-HF-dnL">
+                                <rect key="frame" x="0.0" y="637" width="375" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Sih-hg-R7G"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="nFv-HF-dnL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="FGK-vk-EVI"/>
                             <constraint firstItem="zsE-3T-O7w" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="HfT-u9-1U6"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="nFv-HF-dnL" secondAttribute="trailing" id="bCQ-vM-PyD"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="nFv-HF-dnL" secondAttribute="bottom" id="ddF-TT-xDN"/>
                             <constraint firstItem="zsE-3T-O7w" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="f8y-4f-xIf"/>
-                            <constraint firstItem="zsE-3T-O7w" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="kdq-Py-sMa"/>
                             <constraint firstItem="zsE-3T-O7w" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="lyT-yu-i1T"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="zsE-3T-O7w" secondAttribute="bottom" id="nuf-8b-wyj"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="Nu3-so-pYf">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="BUH-bX-FzG"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="BUH-bX-FzG">
+                            <connections>
+                                <action selector="onEditAction:" destination="BYZ-38-t0r" id="pkj-XC-Voc"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="buttonEdit" destination="BUH-bX-FzG" id="v7A-qK-LDO"/>
+                        <outlet property="labelDelete" destination="nFv-HF-dnL" id="mem-EL-L1V"/>
                         <outlet property="mapView" destination="zsE-3T-O7w" id="vZg-2d-tyW"/>
                         <segue destination="kmM-wb-QDI" kind="show" identifier="showPictureSegue" id="sWG-aG-1N2"/>
                     </connections>
