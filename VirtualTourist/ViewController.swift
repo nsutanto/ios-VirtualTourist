@@ -1,8 +1,8 @@
 //
 //  ViewController.swift
-//  ios-VirtualTourist
+//  VirtualTourist
 //
-//  Created by Nicholas Sutanto on 9/27/17.
+//  Created by Nicholas Sutanto on 9/29/17.
 //  Copyright © 2017 Nicholas Sutanto. All rights reserved.
 //
 
