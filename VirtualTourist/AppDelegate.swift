@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // preload data from CoreData
         preloadData()
         // Start Autosaving
-        stack.autoSave(60)
+        //stack.autoSave(60)
         return true
     }
 

@@ -11,6 +11,7 @@ import MapKit
 import CoreData
 
 extension MapViewController: MKMapViewDelegate {
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
@@ -19,9 +20,8 @@ extension MapViewController: MKMapViewDelegate {
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView!.canShowCallout = true
+            pinView!.canShowCallout = false
             pinView!.pinTintColor = .red
-            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         else {
             pinView!.annotation = annotation
@@ -31,32 +31,30 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     
-    // This delegate method is implemented to respond to taps. It opens the system browser
-    // to the URL specified in the annotationViews subtitle property.
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        //if control == view.rightCalloutAccessoryView {
-            /* TO DELETE
- if let context = fetchedResultsController?.managedObjectContext, let note = fetchedResultsController?.object(at: indexPath) as? Note, editingStyle == .delete {
- context.delete(note)
- }
- */
-        //}
-        let coordinate = view.annotation?.coordinate
-        for location in locations {
-            if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
-                stack?.context.delete(location)
-                //CoreDataStackManager.sharedInstance().saveContext()
-                let annotationToRemove = view.annotation
-                self.mapView.removeAnnotation(annotationToRemove!)
-                break
-            }
-        }
-    }
-    
-    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
-        if (fullyRendered) {
-            performUIUpdatesOnMain {
-                //self.loadingIndicator.stopAnimating()
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
+        print("***** Did select")
+        if (onEdit) {
+            let coordinate = view.annotation?.coordinate
+            for location in locations {
+                if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
+                    
+                    // TODO : Do it at background
+                    stack?.context.delete(location)
+                    
+                    do {
+                        try stack?.saveContext()
+                    }
+                    catch {
+                        // TODO : Show alert
+                    }
+                    let annotationToRemove = view.annotation
+                    
+                    
+                    performUIUpdatesOnMain {
+                        self.mapView.removeAnnotation(annotationToRemove!)
+                    }
+                    break
+                }
             }
         }
     }
@@ -77,6 +75,8 @@ class MapViewController: UIViewController {
         
         let delegate = UIApplication.shared.delegate as! AppDelegate
         stack = delegate.stack
+        
+        mapView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,7 +97,7 @@ class MapViewController: UIViewController {
                 let annotation = MKPointAnnotation()
                 annotation.coordinate.latitude = location.latitude
                 annotation.coordinate.longitude = location.longitude
-                
+                annotation.title = ""
                 annotationsArray.append(annotation)
                 locations.append(location)
             }
@@ -124,6 +124,7 @@ class MapViewController: UIViewController {
     }
     
     @IBAction func onLongPressAction(_ sender: Any) {
+        
         let lpg = sender as? UILongPressGestureRecognizer
         
         let pressPoint = lpg?.location(in: mapView)
@@ -132,11 +133,13 @@ class MapViewController: UIViewController {
         let annotation = MKPointAnnotation()
         annotation.coordinate = pressCoordinate
         
-        mapView.addAnnotation(annotation)
-        
+        performUIUpdatesOnMain {
+            self.mapView.addAnnotation(annotation)
+        }
         // TODO : Do it in background
         let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (stack?.context)!)
         locations.append(location)
+        
     }
 }
 
