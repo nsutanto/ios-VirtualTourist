@@ -34,8 +34,22 @@ extension MapViewController: MKMapViewDelegate {
     // This delegate method is implemented to respond to taps. It opens the system browser
     // to the URL specified in the annotationViews subtitle property.
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if control == view.rightCalloutAccessoryView {
-           
+        //if control == view.rightCalloutAccessoryView {
+            /* TO DELETE
+ if let context = fetchedResultsController?.managedObjectContext, let note = fetchedResultsController?.object(at: indexPath) as? Note, editingStyle == .delete {
+ context.delete(note)
+ }
+ */
+        //}
+        let coordinate = view.annotation?.coordinate
+        for location in locations {
+            if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
+                stack?.context.delete(location)
+                //CoreDataStackManager.sharedInstance().saveContext()
+                let annotationToRemove = view.annotation
+                self.mapView.removeAnnotation(annotationToRemove!)
+                break
+            }
         }
     }
     
@@ -55,6 +69,8 @@ class MapViewController: UIViewController {
     @IBOutlet weak var buttonEdit: UIBarButtonItem!
     
     var stack: CoreDataStack?
+    var onEdit = false
+    var locations = [Location]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +82,9 @@ class MapViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // clean cached locations first
+        locations.removeAll()
+        // reload locations from core data
         loadLocations()
     }
     
@@ -80,6 +99,7 @@ class MapViewController: UIViewController {
                 annotation.coordinate.longitude = location.longitude
                 
                 annotationsArray.append(annotation)
+                locations.append(location)
             }
             
             performUIUpdatesOnMain {
@@ -94,10 +114,12 @@ class MapViewController: UIViewController {
         if (buttonEdit.title == "Edit") {
             labelDelete.isHidden = false
             buttonEdit.title = "Done"
+            onEdit = true
         }
         else {
             labelDelete.isHidden = true
             buttonEdit.title = "Edit"
+            onEdit = false
         }
     }
     
@@ -114,7 +136,7 @@ class MapViewController: UIViewController {
         
         // TODO : Do it in background
         let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (stack?.context)!)
-
+        locations.append(location)
     }
 }
 
