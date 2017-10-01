@@ -38,17 +38,9 @@ extension MapViewController: MKMapViewDelegate {
             for location in locations {
                 if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
                     
-                    // TODO : Do it at background
                     stack?.context.delete(location)
-                    
-                    do {
-                        try stack?.saveContext()
-                    }
-                    catch {
-                        // TODO : Show alert
-                    }
+                    stack?.save()
                     let annotationToRemove = view.annotation
-                    
                     
                     performUIUpdatesOnMain {
                         self.mapView.removeAnnotation(annotationToRemove!)
