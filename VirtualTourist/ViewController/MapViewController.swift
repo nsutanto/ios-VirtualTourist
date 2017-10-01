@@ -8,7 +8,7 @@
 
 import UIKit
 import MapKit
-
+import CoreData
 
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -54,8 +54,38 @@ class MapViewController: UIViewController {
     @IBOutlet weak var labelDelete: UILabel!
     @IBOutlet weak var buttonEdit: UIBarButtonItem!
     
+    var stack: CoreDataStack?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        stack = delegate.stack
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        loadLocations()
+    }
+    
+    func loadLocations() {
+        // Get Locations from CoreData
+        let request: NSFetchRequest<Location> = Location.fetchRequest()
+        if let result = try? stack?.context.fetch(request) {
+            var annotationsArray = [MKPointAnnotation]()
+            for location in result! {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate.latitude = location.latitude
+                annotation.coordinate.longitude = location.longitude
+                
+                annotationsArray.append(annotation)
+            }
+            
+            performUIUpdatesOnMain {
+                self.mapView.addAnnotations(annotationsArray)
+            }
+        }
     }
     
     // MARK : Action
@@ -82,6 +112,9 @@ class MapViewController: UIViewController {
         
         mapView.addAnnotation(annotation)
         
+        // TODO : Do it in background
+        let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (stack?.context)!)
+
     }
 }
 
