@@ -81,6 +81,7 @@ class MapViewController: UIViewController {
         annotation.coordinate = pressCoordinate
         
         mapView.addAnnotation(annotation)
+        
     }
 }
 
