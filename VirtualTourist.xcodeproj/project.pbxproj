@@ -66,14 +66,14 @@
 		6B459E7C1F7F1DCE003E0582 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
-				6B86BEFB1F7F2B0B00B349D5 /* Utility */,
-				6B459E901F7F1E4F003E0582 /* ViewController */,
-				6B459E8F1F7F1E46003E0582 /* Model */,
 				6B459E7D1F7F1DCE003E0582 /* AppDelegate.swift */,
 				6B459E811F7F1DCE003E0582 /* Main.storyboard */,
 				6B459E841F7F1DCE003E0582 /* Assets.xcassets */,
 				6B459E861F7F1DCE003E0582 /* LaunchScreen.storyboard */,
 				6B459E891F7F1DCE003E0582 /* Info.plist */,
+				6B86BEFB1F7F2B0B00B349D5 /* Utility */,
+				6B459E901F7F1E4F003E0582 /* ViewController */,
+				6B459E8F1F7F1E46003E0582 /* Model */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -81,10 +81,8 @@
 		6B459E8F1F7F1E46003E0582 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				6B86BF231F81511D00B349D5 /* CoreDataStack.swift */,
-				6B86BF1F1F80937800B349D5 /* Location.swift */,
-				6B86BF201F80937800B349D5 /* Location+CoreDataProperties.swift */,
-				6B86BF181F8086D700B349D5 /* Model.xcdatamodeld */,
+				6B86BF261F815BD500B349D5 /* CoreData */,
+				6B86BF251F815BCB00B349D5 /* Flickr */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -104,6 +102,24 @@
 				6B86BEFC1F7F2B3500B349D5 /* GCDBlackBox.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		6B86BF251F815BCB00B349D5 /* Flickr */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Flickr;
+			sourceTree = "<group>";
+		};
+		6B86BF261F815BD500B349D5 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				6B86BF231F81511D00B349D5 /* CoreDataStack.swift */,
+				6B86BF1F1F80937800B349D5 /* Location.swift */,
+				6B86BF201F80937800B349D5 /* Location+CoreDataProperties.swift */,
+				6B86BF181F8086D700B349D5 /* Model.xcdatamodeld */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
