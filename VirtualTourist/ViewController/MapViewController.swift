@@ -128,10 +128,8 @@ class MapViewController: UIViewController {
         performUIUpdatesOnMain {
             self.mapView.addAnnotation(annotation)
         }
-        // TODO : Do it in background
         let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (stack?.context)!)
         locations.append(location)
-        
     }
 }
 
