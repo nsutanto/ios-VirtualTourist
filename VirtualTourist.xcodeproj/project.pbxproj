@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B3D17B31F86F21100FB734D /* FlickrConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3D17B21F86F21100FB734D /* FlickrConstants.swift */; };
+		6B3D17B51F86F25C00FB734D /* FlickrClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3D17B41F86F25C00FB734D /* FlickrClient.swift */; };
 		6B459E7E1F7F1DCE003E0582 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B459E7D1F7F1DCE003E0582 /* AppDelegate.swift */; };
 		6B459E801F7F1DCE003E0582 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B459E7F1F7F1DCE003E0582 /* MapViewController.swift */; };
 		6B459E831F7F1DCE003E0582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B459E811F7F1DCE003E0582 /* Main.storyboard */; };
@@ -21,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6B3D17B21F86F21100FB734D /* FlickrConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrConstants.swift; sourceTree = "<group>"; };
+		6B3D17B41F86F25C00FB734D /* FlickrClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrClient.swift; sourceTree = "<group>"; };
 		6B459E7A1F7F1DCE003E0582 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B459E7D1F7F1DCE003E0582 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6B459E7F1F7F1DCE003E0582 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -107,6 +111,8 @@
 		6B86BF251F815BCB00B349D5 /* Flickr */ = {
 			isa = PBXGroup;
 			children = (
+				6B3D17B21F86F21100FB734D /* FlickrConstants.swift */,
+				6B3D17B41F86F25C00FB734D /* FlickrClient.swift */,
 			);
 			path = Flickr;
 			sourceTree = "<group>";
@@ -195,6 +201,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B86BF211F80937800B349D5 /* Location.swift in Sources */,
+				6B3D17B51F86F25C00FB734D /* FlickrClient.swift in Sources */,
+				6B3D17B31F86F21100FB734D /* FlickrConstants.swift in Sources */,
 				6B86BF221F80937800B349D5 /* Location+CoreDataProperties.swift in Sources */,
 				6B86BEFD1F7F2B3500B349D5 /* GCDBlackBox.swift in Sources */,
 				6B459E801F7F1DCE003E0582 /* MapViewController.swift in Sources */,

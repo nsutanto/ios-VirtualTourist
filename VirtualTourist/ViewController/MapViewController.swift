@@ -34,6 +34,7 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
         print("***** Did select")
         if (onEdit) {
+            // Delete
             let coordinate = view.annotation?.coordinate
             for location in locations {
                 if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
@@ -48,6 +49,11 @@ extension MapViewController: MKMapViewDelegate {
                     break
                 }
             }
+        } else {
+            // Search photos
+            FlickrClient.sharedInstance().searchPhotos(20, 20, completionHandlerSearchPhotos: { (result, error ) in
+                
+            })
         }
     }
 }
