@@ -74,7 +74,7 @@
         <!--Picture View Controller-->
         <scene sceneID="L6F-oH-aAD">
             <objects>
-                <viewController id="kmM-wb-QDI" customClass="PictureViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PictureViewController" id="kmM-wb-QDI" customClass="PictureViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UVB-K9-ASR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

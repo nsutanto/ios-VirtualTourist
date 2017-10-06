@@ -32,10 +32,9 @@ extension MapViewController: MKMapViewDelegate {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
-        print("***** Did select")
+        let coordinate = view.annotation?.coordinate
         if (onEdit) {
             // Delete
-            let coordinate = view.annotation?.coordinate
             for location in locations {
                 if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
                     
@@ -51,7 +50,19 @@ extension MapViewController: MKMapViewDelegate {
             }
         } else {
             // Search photos
-            FlickrClient.sharedInstance().searchPhotos(20, 20, completionHandlerSearchPhotos: { (result, error ) in
+            FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in
+                
+                if (error == nil) {
+                    performUIUpdatesOnMain {
+                        let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewController") as! PictureViewController
+                        //vc.annotation = view.annotation as! MKAnnotationView
+                        self.navigationController?.pushViewController(vc, animated: false)
+                    }
+                }
+                else {
+                    // TODO: Perform alert
+                }
+                                                        
                 
             })
         }

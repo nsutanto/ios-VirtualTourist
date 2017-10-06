@@ -9,13 +9,16 @@
 import UIKit
 import MapKit
 
-class PictureViewController: UIViewController {
+class PictureViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var buttonPictureAction: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     
+    var annotation: MKAnnotationView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         // Do any additional setup after loading the view, typically from a nib.
     }
     

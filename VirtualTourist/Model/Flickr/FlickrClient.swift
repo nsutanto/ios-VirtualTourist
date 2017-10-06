@@ -36,6 +36,8 @@ class FlickrClient {
             FlickrParameterKeys.APIKey: Constants.APIKey,
             FlickrParameterKeys.SafeSearch: FlickrParameterValues.UseSafeSearch,
             FlickrParameterKeys.Extras: FlickrParameterValues.MediumURL,
+            FlickrParameterKeys.Latitude: String(latitude),
+            FlickrParameterKeys.Longitude: String(longitude)
         ]
         
  
@@ -50,6 +52,7 @@ class FlickrClient {
                 completionHandlerSearchPhotos(nil, error)
             } else {
                 
+                completionHandlerSearchPhotos("test" as AnyObject, nil)
                 /*if let results = parsedResult?[GetStudentJSONResponseKeys.StudentResult] as? [[String:AnyObject]] {
                     
                     self.studentInformations = StudentInformation.StudentInformationsFromResults(results)
@@ -137,6 +140,7 @@ class FlickrClient {
             }
         }
         
+        print(components.url!.absoluteString)
         return components.url!
     }
 }

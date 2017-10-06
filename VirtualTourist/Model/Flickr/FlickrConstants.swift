@@ -33,11 +33,14 @@ extension FlickrClient {
         static let APIKey = "api_key"
         static let Extras = "extras"
         static let SafeSearch = "safe_search"
+        static let Longitude = "lon"
+        static let Latitude = "lat"
     }
     
     // MARK: Flickr Parameter Values
     struct FlickrParameterValues {
         static let MediumURL = "url_m"
+        static let SquareURL = "url_q"
         static let UseSafeSearch = "1"
     }
     
