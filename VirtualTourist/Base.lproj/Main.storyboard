@@ -98,7 +98,7 @@
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="collectionViewContent" id="Rwp-cA-zam">
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="collectionViewCell" id="Rwp-cA-zam" customClass="PictureCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -146,6 +146,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="buttonPictureAction" destination="0oh-J5-Tau" id="Xwm-cl-a8z"/>
+                        <outlet property="collectionView" destination="Rsp-v2-vJ8" id="Ko7-b6-1OZ"/>
                         <outlet property="mapView" destination="d8z-aY-3vD" id="deP-T8-jwa"/>
                     </connections>
                 </viewController>

@@ -20,6 +20,7 @@
 		6B86BF211F80937800B349D5 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B86BF1F1F80937800B349D5 /* Location.swift */; };
 		6B86BF221F80937800B349D5 /* Location+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B86BF201F80937800B349D5 /* Location+CoreDataProperties.swift */; };
 		6B86BF241F81511E00B349D5 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B86BF231F81511D00B349D5 /* CoreDataStack.swift */; };
+		6BD1D1B81F88636A00E7441A /* PictureCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD1D1B71F88636A00E7441A /* PictureCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		6B86BF1F1F80937800B349D5 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		6B86BF201F80937800B349D5 /* Location+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		6B86BF231F81511D00B349D5 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		6BD1D1B71F88636A00E7441A /* PictureCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 			children = (
 				6B459E7F1F7F1DCE003E0582 /* MapViewController.swift */,
 				6B459E911F7F2303003E0582 /* PictureViewController.swift */,
+				6BD1D1B71F88636A00E7441A /* PictureCollectionViewCell.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				6B86BF1A1F8086D700B349D5 /* Model.xcdatamodeld in Sources */,
 				6B459E921F7F2303003E0582 /* PictureViewController.swift in Sources */,
 				6B459E7E1F7F1DCE003E0582 /* AppDelegate.swift in Sources */,
+				6BD1D1B81F88636A00E7441A /* PictureCollectionViewCell.swift in Sources */,
 				6B86BF241F81511E00B349D5 /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
