@@ -28,20 +28,21 @@ class FlickrClient {
     
     func searchPhotos(_ longitude: Double,
                       _ latitude: Double,
-                      completionHandlerSearchPhotos: @escaping (_ result: AnyObject?, _ error: NSError?)
+                      completionHandlerSearchPhotos: @escaping (_ result: [String]?, _ error: NSError?)
         -> Void) {
-        
+     
+        /* 1. Specify parameters, method (if has {key}), and HTTP body (if POST) */
         let methodParameters = [
             FlickrParameterKeys.Method: Methods.Search,
             FlickrParameterKeys.APIKey: Constants.APIKey,
             FlickrParameterKeys.SafeSearch: FlickrParameterValues.UseSafeSearch,
             FlickrParameterKeys.Extras: FlickrParameterValues.MediumURL,
+            FlickrParameterKeys.Format: FlickrParameterValues.Json,
+            FlickrParameterKeys.NoJsonCallback: FlickrParameterValues.JsonCallBackValue,
             FlickrParameterKeys.Latitude: String(latitude),
             FlickrParameterKeys.Longitude: String(longitude)
         ]
         
- 
-        /* 1. Specify parameters, method (if has {key}), and HTTP body (if POST) */
         let request = URLRequest(url: parseURLFromParameters(methodParameters as [String : AnyObject]))
         
         /* 2. Make the request */
@@ -52,7 +53,60 @@ class FlickrClient {
                 completionHandlerSearchPhotos(nil, error)
             } else {
                 
-                completionHandlerSearchPhotos("test" as AnyObject, nil)
+                /* GUARD: Is the "photos" key in our result? */
+                guard let photosDictionary = parsedResult?[FlickrResponseKeys.Photos] as? [String:AnyObject] else {
+                    // TODO : perform error handling
+                    return
+                }
+                
+                /* GUARD: Is the "photo" key in photosDictionary? */
+                guard let photosArray = photosDictionary[FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
+                    // TODO : perform error handling
+                    return
+                }
+             
+                if photosArray.count == 0 {
+                    // TODO : perform error handling
+                    return
+                } else {
+                    print("Number of photos : \(photosArray.count)")
+                    
+                    for photo in photosArray {
+                        let photoDictionary = photo as [String:Any]
+                        
+                        /* GUARD: Does our photo have a key for 'url_m'? */
+                        guard let imageUrlString = photoDictionary[FlickrResponseKeys.MediumURL] as? String else {
+                            // TODO : perform error handling
+                            return
+                        }
+                        
+                        
+                    }
+                    
+                    //let randomPhotoIndex = Int(arc4random_uniform(UInt32(photosArray.count)))
+                    //let photoDictionary = photosArray[randomPhotoIndex] as [String: AnyObject]
+                    //let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String
+                    
+                    /* GUARD: Does our photo have a key for 'url_m'? */
+                    //guard let imageUrlString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                    //    displayError("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
+                    //    return
+                    //}
+                    
+                    // if an image exists at the url, set the image and title
+                    //let imageURL = URL(string: imageUrlString)
+                    //if let imageData = try? Data(contentsOf: imageURL!) {
+                    //    performUIUpdatesOnMain {
+                    //        self.setUIEnabled(true)
+                    //        self.photoImageView.image = UIImage(data: imageData)
+                    //        self.photoTitleLabel.text = photoTitle ?? "(Untitled)"
+                    //    }
+                    //} else {
+                    //    displayError("Image does not exist at \(imageURL)")
+                    //}
+                }
+
+                //completionHandlerSearchPhotos("test" as [String], nil)
                 /*if let results = parsedResult?[GetStudentJSONResponseKeys.StudentResult] as? [[String:AnyObject]] {
                     
                     self.studentInformations = StudentInformation.StudentInformationsFromResults(results)

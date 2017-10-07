@@ -10,6 +10,11 @@ import Foundation
 
 import UIKit
 class PictureCollectionViewCell: UICollectionViewCell {
+
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    
     
     //@IBOutlet weak var myLabel: UILabel!
 }
