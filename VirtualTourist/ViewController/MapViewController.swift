@@ -55,7 +55,7 @@ extension MapViewController: MKMapViewDelegate {
                 if (error == nil) {
                     performUIUpdatesOnMain {
                         let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewController") as! PictureViewController
-                        //vc.annotation = view.annotation as! MKAnnotationView
+                        vc.annotation = view.annotation
                         self.navigationController?.pushViewController(vc, animated: false)
                     }
                 }

@@ -9,17 +9,45 @@
 import UIKit
 import MapKit
 
-class PictureViewController: UIViewController, MKMapViewDelegate {
+extension PictureViewController: MKMapViewDelegate {
+
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = false
+            pinView!.pinTintColor = .red
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+}
+
+class PictureViewController: UIViewController {
     
     @IBOutlet weak var buttonPictureAction: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     
-    var annotation: MKAnnotationView!
+    var annotation: MKAnnotation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        // Do any additional setup after loading the view, typically from a nib.
+        initMap()
+    }
+    
+    // Mark: Init Map
+    private func initMap() {
+        performUIUpdatesOnMain {
+            self.mapView.addAnnotation(self.annotation)
+        }
     }
     
     @IBAction func performPictureAction(_ sender: Any) {
