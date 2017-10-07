@@ -80,7 +80,6 @@ class FlickrClient {
                             return
                         }
                         
-                        
                     }
                     
                     //let randomPhotoIndex = Int(arc4random_uniform(UInt32(photosArray.count)))

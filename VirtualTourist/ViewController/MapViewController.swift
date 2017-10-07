@@ -53,9 +53,9 @@ extension MapViewController: MKMapViewDelegate {
             FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in
                 
                 if (error == nil) {
+                    let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewControllerID") as! PictureViewController
+                    vc.annotation = view.annotation
                     performUIUpdatesOnMain {
-                        let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewControllerID") as! PictureViewController
-                        vc.annotation = view.annotation
                         self.navigationController?.pushViewController(vc, animated: false)
                     }
                 }
