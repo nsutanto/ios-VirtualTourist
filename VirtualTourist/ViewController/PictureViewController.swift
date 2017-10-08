@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 
 
@@ -30,6 +31,10 @@ extension PictureViewController: UICollectionViewDataSource {
         
         return cell
     }
+}
+
+extension PictureViewController: NSFetchedResultsControllerDelegate {
+    
 }
 
 extension PictureViewController: UICollectionViewDelegate {
@@ -63,13 +68,26 @@ class PictureViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    var selectedLocation: Location!
+    var coreDataStack: CoreDataStack?
+    var fetchedResultsController: NSFetchedResultsController<Image>!
     var annotation: MKAnnotation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Initialize core data stack
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        coreDataStack = delegate.stack
+        
+        // Initialize delegate
         mapView.delegate = self
         collectionView.delegate = self
+        
+        // Init Map
         initMap()
+        // Init fetchedResultsController
+        initializeFetchedResultsController()
     }
     
     // Mark: Init Map
@@ -82,5 +100,47 @@ class PictureViewController: UIViewController {
     @IBAction func performPictureAction(_ sender: Any) {
     
     }
+    
+    // Source :
+    // https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreData/nsfetchedresultscontroller.html#//apple_ref/doc/uid/TP40001075-CH8-SW1
+    //
+    func initializeFetchedResultsController() {
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Image")
+        request.sortDescriptors = [NSSortDescriptor(key: "imageURL", ascending: true)]
+        request.predicate = NSPredicate(format: "location == %@", self.selectedLocation)
+        
+        let moc = coreDataStack?.context
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                              managedObjectContext: moc!,
+                                                              sectionNameKeyPath: nil,
+                                                              cacheName: nil) as! NSFetchedResultsController<Image>
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            // TODO : Perform error handling
+            fatalError("Failed to initialize FetchedResultsController: \(error)")
+        }
+    }
+    
+    // test
+    //MARK: - Fetched Results Controller
+    /*
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "Picture")
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key:"id", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "location == %@", self.location)
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                                  managedObjectContext: self.sharedContext,
+                                                                  sectionNameKeyPath: nil,
+                                                                  cacheName: nil)
+        return fetchedResultsController
+    }()
+ */
+
 }
 

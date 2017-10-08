@@ -38,8 +38,8 @@ extension MapViewController: MKMapViewDelegate {
             for location in locations {
                 if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
                     
-                    stack?.context.delete(location)
-                    stack?.save()
+                    coreDataStack?.context.delete(location)
+                    coreDataStack?.save()
                     let annotationToRemove = view.annotation
                     
                     performUIUpdatesOnMain {
@@ -60,7 +60,7 @@ extension MapViewController: MKMapViewDelegate {
                     let location = self.getLocation(longitude: coordinate!.longitude, latitude: coordinate!.latitude)
                     
                     for urlString in result! {
-                        let image = Image(urlString: urlString, imageData: nil, context: (self.stack?.context)!)
+                        let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                         location.addToLocationToImage(image)
                     }
                     
@@ -86,15 +86,16 @@ class MapViewController: UIViewController {
     @IBOutlet weak var labelDelete: UILabel!
     @IBOutlet weak var buttonEdit: UIBarButtonItem!
     
-    var stack: CoreDataStack?
+    var coreDataStack: CoreDataStack?
     var onEdit = false
     var locations = [Location]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Initialize core data stack
         let delegate = UIApplication.shared.delegate as! AppDelegate
-        stack = delegate.stack
+        coreDataStack = delegate.stack
         
         mapView.delegate = self
     }
@@ -111,7 +112,7 @@ class MapViewController: UIViewController {
     // Get Locations from CoreData
     func loadLocations() {
         let request: NSFetchRequest<Location> = Location.fetchRequest()
-        if let result = try? stack?.context.fetch(request) {
+        if let result = try? coreDataStack?.context.fetch(request) {
             var annotationsArray = [MKPointAnnotation]()
             for location in result! {
                 let annotation = MKPointAnnotation()
@@ -132,7 +133,7 @@ class MapViewController: UIViewController {
     func getLocation(longitude: Double, latitude: Double) -> Location {
         var retValue = Location()
         let request: NSFetchRequest<Location> = Location.fetchRequest()
-        if let result = try? stack?.context.fetch(request) {
+        if let result = try? coreDataStack?.context.fetch(request) {
             for location in result! {
                 if (location.longitude == longitude && location.latitude == latitude) {
                     retValue = location
@@ -174,7 +175,7 @@ class MapViewController: UIViewController {
         }
         
         // Persist the location to the core data
-        let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (stack?.context)!)
+        let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (coreDataStack?.context)!)
         locations.append(location)
         
         // TODO : Extra bonus. Perform background task to get the download the images immediately
