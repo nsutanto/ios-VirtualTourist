@@ -56,9 +56,7 @@ extension MapViewController: MKMapViewDelegate {
             
             vc.selectedLocation = location
             
-            performUIUpdatesOnMain {
-                self.navigationController?.pushViewController(vc, animated: false)
-            }
+            self.navigationController?.pushViewController(vc, animated: false)
             
             // Search photos
             //FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in

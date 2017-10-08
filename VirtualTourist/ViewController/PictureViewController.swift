@@ -70,20 +70,28 @@ class PictureViewController: UIViewController {
     
     var selectedLocation: Location!
     var coreDataStack: CoreDataStack?
+    var flickrImages : [Image]?
     
-    lazy var fetchedResultsController: NSFetchedResultsController = { () -> NSFetchedResultsController<NSFetchRequestResult> in
+    lazy var fetchedResultsController: NSFetchedResultsController<Image> = {
         
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Image")
         request.sortDescriptors = [NSSortDescriptor(key: "imageURL", ascending: true)]
-        request.predicate = NSPredicate(format: "location == %@", self.selectedLocation)
+        request.predicate = NSPredicate(format: "imageToLocation == %@", self.selectedLocation)
         
         let moc = coreDataStack?.context
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: request as! NSFetchRequest<Image>,
                                                                   managedObjectContext: moc!,
                                                                   sectionNameKeyPath: nil,
                                                                   cacheName: nil)
-        return fetchedResultsController
         
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            // TODO : Perform error handling
+            fatalError("Failed to initialize FetchedResultsController: \(error)")
+        }
+        
+        return fetchedResultsController
     }()
     
     override func viewDidLoad() {
@@ -100,6 +108,8 @@ class PictureViewController: UIViewController {
         
         // Init Map
         initMap()
+        // Init Photos
+        initPhotos()
     }
     
     // Mark: Init Map
@@ -114,17 +124,30 @@ class PictureViewController: UIViewController {
         }
     }
     
-    @IBAction func performPictureAction(_ sender: Any) {
-    
+    private func initPhotos() {
+        flickrImages = fetchedResultsController.fetchedObjects!
+        
+        if (flickrImages?.count == 0) {
+            getPhotoFromFlickr()
+        }
     }
     
-    func performFetch() {
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            // TODO : Perform error handling
-            fatalError("Failed to initialize FetchedResultsController: \(error)")
-        }
+    private func getPhotoFromFlickr() {
+        FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude, selectedLocation.latitude, completionHandlerSearchPhotos: { (result, error ) in
+            if (error == nil) {
+                for urlString in result! {
+                    let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
+                    self.selectedLocation.addToLocationToImage(image)
+                }
+            }
+            else {
+            // TODO: Perform alert
+            }
+        })
+    }
+    
+    @IBAction func performPictureAction(_ sender: Any) {
+    
     }
 }
 

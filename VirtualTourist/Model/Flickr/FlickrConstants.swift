@@ -37,6 +37,7 @@ extension FlickrClient {
         static let Latitude = "lat"
         static let Format = "format"
         static let NoJsonCallback = "nojsoncallback"
+        static let PerPage = "perpage"
     }
     
     // MARK: Flickr Parameter Values
@@ -46,6 +47,7 @@ extension FlickrClient {
         static let UseSafeSearch = "1"
         static let Json = "json"
         static let JsonCallBackValue = "1"
+        static let PerPageValue = "21"
     }
     
     // MARK: Flickr Response Keys
