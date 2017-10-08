@@ -1,5 +1,6 @@
 //
 //  Image+CoreDataClass.swift
+//  VirtualTourist
 //
 //  Created by Nicholas Sutanto on 10/7/17.
 //  Copyright © 2017 Nicholas Sutanto. All rights reserved.
