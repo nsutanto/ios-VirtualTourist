@@ -2,7 +2,7 @@
 //  Location+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Nicholas Sutanto on 9/30/17.
+//  Created by Nicholas Sutanto on 10/7/17.
 //  Copyright © 2017 Nicholas Sutanto. All rights reserved.
 //
 //
@@ -19,4 +19,23 @@ extension Location {
 
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
+    @NSManaged public var locationToImage: NSSet?
+
+}
+
+// MARK: Generated accessors for locationToImage
+extension Location {
+
+    @objc(addLocationToImageObject:)
+    @NSManaged public func addToLocationToImage(_ value: Image)
+
+    @objc(removeLocationToImageObject:)
+    @NSManaged public func removeFromLocationToImage(_ value: Image)
+
+    @objc(addLocationToImage:)
+    @NSManaged public func addToLocationToImage(_ values: NSSet)
+
+    @objc(removeLocationToImage:)
+    @NSManaged public func removeFromLocationToImage(_ values: NSSet)
+
 }
