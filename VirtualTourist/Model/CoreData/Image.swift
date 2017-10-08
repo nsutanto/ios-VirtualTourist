@@ -13,7 +13,7 @@ import CoreData
 
 public class Image: NSManagedObject {
 
-    convenience init(urlString: String, imageData: NSData, context: NSManagedObjectContext) {
+    convenience init(urlString: String, imageData: NSData?, context: NSManagedObjectContext) {
         
         // An EntityDescription is an object that has access to all
         // the information you provided in the Entity part of the model

@@ -55,6 +55,17 @@ extension MapViewController: MKMapViewDelegate {
                 if (error == nil) {
                     let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewControllerID") as! PictureViewController
                     vc.annotation = view.annotation
+                    
+                    // Grab the location object from Core Data
+                    let location = self.getLocation(longitude: coordinate!.longitude, latitude: coordinate!.latitude)
+                    
+                    for urlString in result! {
+                        let image = Image(urlString: urlString, imageData: nil, context: (self.stack?.context)!)
+                        location.addToLocationToImage(image)
+                    }
+                    
+                    // Download image
+                    
                     performUIUpdatesOnMain {
                         self.navigationController?.pushViewController(vc, animated: false)
                     }
@@ -97,8 +108,8 @@ class MapViewController: UIViewController {
         loadLocations()
     }
     
+    // Get Locations from CoreData
     func loadLocations() {
-        // Get Locations from CoreData
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         if let result = try? stack?.context.fetch(request) {
             var annotationsArray = [MKPointAnnotation]()
@@ -115,6 +126,21 @@ class MapViewController: UIViewController {
                 self.mapView.addAnnotations(annotationsArray)
             }
         }
+    }
+    
+    // Get 1 location from CoreData
+    func getLocation(longitude: Double, latitude: Double) -> Location {
+        var retValue = Location()
+        let request: NSFetchRequest<Location> = Location.fetchRequest()
+        if let result = try? stack?.context.fetch(request) {
+            for location in result! {
+                if (location.longitude == longitude && location.latitude == latitude) {
+                    retValue = location
+                    break
+                }
+            }
+        }
+        return retValue
     }
     
     // MARK : Action
