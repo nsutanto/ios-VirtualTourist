@@ -70,8 +70,21 @@ class PictureViewController: UIViewController {
     
     var selectedLocation: Location!
     var coreDataStack: CoreDataStack?
-    var fetchedResultsController: NSFetchedResultsController<Image>!
-    var annotation: MKAnnotation!
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = { () -> NSFetchedResultsController<NSFetchRequestResult> in
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Image")
+        request.sortDescriptors = [NSSortDescriptor(key: "imageURL", ascending: true)]
+        request.predicate = NSPredicate(format: "location == %@", self.selectedLocation)
+        
+        let moc = coreDataStack?.context
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                                  managedObjectContext: moc!,
+                                                                  sectionNameKeyPath: nil,
+                                                                  cacheName: nil)
+        return fetchedResultsController
+        
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,17 +96,21 @@ class PictureViewController: UIViewController {
         // Initialize delegate
         mapView.delegate = self
         collectionView.delegate = self
+        fetchedResultsController.delegate = self
         
         // Init Map
         initMap()
-        // Init fetchedResultsController
-        initializeFetchedResultsController()
     }
     
     // Mark: Init Map
     private func initMap() {
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate.latitude = selectedLocation.latitude
+        annotation.coordinate.longitude = selectedLocation.longitude
+        
         performUIUpdatesOnMain {
-            self.mapView.addAnnotation(self.annotation)
+            self.mapView.addAnnotation(annotation)
         }
     }
     
@@ -101,22 +118,7 @@ class PictureViewController: UIViewController {
     
     }
     
-    // Source :
-    // https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreData/nsfetchedresultscontroller.html#//apple_ref/doc/uid/TP40001075-CH8-SW1
-    //
-    func initializeFetchedResultsController() {
-        
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Image")
-        request.sortDescriptors = [NSSortDescriptor(key: "imageURL", ascending: true)]
-        request.predicate = NSPredicate(format: "location == %@", self.selectedLocation)
-        
-        let moc = coreDataStack?.context
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-                                                              managedObjectContext: moc!,
-                                                              sectionNameKeyPath: nil,
-                                                              cacheName: nil) as! NSFetchedResultsController<Image>
-        fetchedResultsController.delegate = self
-        
+    func performFetch() {
         do {
             try fetchedResultsController.performFetch()
         } catch {
@@ -124,23 +126,5 @@ class PictureViewController: UIViewController {
             fatalError("Failed to initialize FetchedResultsController: \(error)")
         }
     }
-    
-    // test
-    //MARK: - Fetched Results Controller
-    /*
-    lazy var fetchedResultsController: NSFetchedResultsController = {
-        let fetchRequest = NSFetchRequest(entityName: "Picture")
-        
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key:"id", ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "location == %@", self.location)
-        
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                                  managedObjectContext: self.sharedContext,
-                                                                  sectionNameKeyPath: nil,
-                                                                  cacheName: nil)
-        return fetchedResultsController
-    }()
- */
-
 }
 

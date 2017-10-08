@@ -49,33 +49,38 @@ extension MapViewController: MKMapViewDelegate {
                 }
             }
         } else {
+            let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewControllerID") as! PictureViewController
+            
+            // Grab the location object from Core Data
+            let location = self.getLocation(longitude: coordinate!.longitude, latitude: coordinate!.latitude)
+            
+            vc.selectedLocation = location
+            
+            performUIUpdatesOnMain {
+                self.navigationController?.pushViewController(vc, animated: false)
+            }
+            
             // Search photos
-            FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in
+            //FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in
                 
-                if (error == nil) {
-                    let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewControllerID") as! PictureViewController
-                    vc.annotation = view.annotation
-                    
-                    // Grab the location object from Core Data
-                    let location = self.getLocation(longitude: coordinate!.longitude, latitude: coordinate!.latitude)
-                    
+              //  if (error == nil) {
+            
+                    /*
                     for urlString in result! {
                         let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
-                        location.addToLocationToImage(image)
+                        location?.addToLocationToImage(image)
                     }
+                     */
                     
                     // Download image
                     
-                    performUIUpdatesOnMain {
-                        self.navigationController?.pushViewController(vc, animated: false)
-                    }
-                }
-                else {
+                    //performUIUpdatesOnMain {
+                    //    self.navigationController?.pushViewController(vc, animated: false)
+                    //}
+                //}
+                //else {
                     // TODO: Perform alert
-                }
-                                                        
-                
-            })
+                //}
         }
     }
 }
@@ -118,7 +123,6 @@ class MapViewController: UIViewController {
                 let annotation = MKPointAnnotation()
                 annotation.coordinate.latitude = location.latitude
                 annotation.coordinate.longitude = location.longitude
-                annotation.title = ""
                 annotationsArray.append(annotation)
                 locations.append(location)
             }
@@ -130,18 +134,19 @@ class MapViewController: UIViewController {
     }
     
     // Get 1 location from CoreData
-    func getLocation(longitude: Double, latitude: Double) -> Location {
-        var retValue = Location()
+    func getLocation(longitude: Double, latitude: Double) -> Location? {
+        var location: Location?
         let request: NSFetchRequest<Location> = Location.fetchRequest()
+        
         if let result = try? coreDataStack?.context.fetch(request) {
-            for location in result! {
-                if (location.longitude == longitude && location.latitude == latitude) {
-                    retValue = location
+            for locationInResult in result! {
+                if (locationInResult.latitude == latitude && locationInResult.longitude == longitude) {
+                    location = locationInResult
                     break
                 }
             }
         }
-        return retValue
+        return location
     }
     
     // MARK : Action
