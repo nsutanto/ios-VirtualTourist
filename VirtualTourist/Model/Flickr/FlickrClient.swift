@@ -71,6 +71,8 @@ class FlickrClient {
                 } else {
                     print("Number of photos : \(photosArray.count)")
                     
+                    var urlArray = [String]()
+                    
                     for photo in photosArray {
                         let photoDictionary = photo as [String:Any]
                         
@@ -80,7 +82,10 @@ class FlickrClient {
                             return
                         }
                         
+                        urlArray.append(imageUrlString)
                     }
+                    
+                     completionHandlerSearchPhotos(urlArray, nil)
                     
                     //let randomPhotoIndex = Int(arc4random_uniform(UInt32(photosArray.count)))
                     //let photoDictionary = photosArray[randomPhotoIndex] as [String: AnyObject]
@@ -105,7 +110,7 @@ class FlickrClient {
                     //}
                 }
 
-                //completionHandlerSearchPhotos("test" as [String], nil)
+               
                 /*if let results = parsedResult?[GetStudentJSONResponseKeys.StudentResult] as? [[String:AnyObject]] {
                     
                     self.studentInformations = StudentInformation.StudentInformationsFromResults(results)

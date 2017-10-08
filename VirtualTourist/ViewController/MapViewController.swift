@@ -142,11 +142,20 @@ class MapViewController: UIViewController {
         let annotation = MKPointAnnotation()
         annotation.coordinate = pressCoordinate
         
+        // Add map annotation
         performUIUpdatesOnMain {
             self.mapView.addAnnotation(annotation)
         }
+        
+        // Persist the location to the core data
         let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (stack?.context)!)
         locations.append(location)
+        
+        // TODO : Extra bonus. Perform background task to get the download the images immediately
+    }
+    
+    private func fetchImage() {
+        
     }
 }
 
