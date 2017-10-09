@@ -15,6 +15,7 @@ import CoreData
 extension PictureViewController: UICollectionViewDataSource {
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("***** Count = \(flickrImages?.count ?? 0)")
         return flickrImages?.count ?? 0
     }
     
@@ -24,10 +25,24 @@ extension PictureViewController: UICollectionViewDataSource {
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
-        // Use the outlet in our custom class to get a reference to the UILabel in the cell
-        //cell.myLabel.text = self.items[indexPath.item]
-        cell.backgroundColor = UIColor.cyan // make cell more visible in our example project
+        let image = fetchedResultsController.object(at: indexPath)
         
+        if let imageData = image.imageBinary {
+            print("***** Assign Image")
+            // assign image
+            cell.imageView.image = UIImage(data: imageData as Data)
+        }
+        else {
+            print("***** Download Image")
+            // Download image
+            downloadImage(imageURL: image.imageURL!) { (imageData) -> Void in
+                // Display it
+                cell.imageView.image = UIImage(data: imageData as Data)
+                    
+                // Stop animating
+                //cell.activityView.stopAnimating()
+            }
+        }
         return cell
     }
 }
@@ -40,7 +55,7 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
-        print("controller didChange 0")
+        //print("controller didChange 0")
         /*
         let set = IndexSet(integer: sectionIndex)
         
@@ -57,7 +72,7 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        print("controller didChange 1")
+        //print("controller didChange 1")
         /*
         switch(type) {
         case .insert:
@@ -173,18 +188,23 @@ class PictureViewController: UIViewController {
         
         if (flickrImages?.count == 0) {
             getPhotoFromFlickr()
+        } else {
+            print("***** Flickr image is not 0")
+            // TODO
         }
     }
     
     private func getPhotoFromFlickr() {
         FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude, selectedLocation.latitude, completionHandlerSearchPhotos: { (result, error ) in
             if (error == nil) {
+                print("**** Get Data from flickr")
                 for urlString in result! {
                     let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                     self.selectedLocation.addToLocationToImage(image)
                 }
             }
             else {
+                print("**** Error requesting flickr")
             // TODO: Perform alert
             }
         })
@@ -194,33 +214,40 @@ class PictureViewController: UIViewController {
         coreDataStack?.performBackgroundBatchOperation { (workerContext) in
             for image in self.flickrImages! {
                 if image.imageBinary == nil {
-                    
+                    let imageURL = URL(string: image.imageURL!)
+                    if let imageData = try? Data(contentsOf: imageURL!) {
+                        image.imageBinary = imageData as NSData
+                    }
                 }
             }
-            /*
-            for i in 1...100 {
-                let nb = Notebook(name: "Background notebook \(i)", context: workerContext)
-                
-                for _ in 1...100{
-                    let note = Note(text: "The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother's keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.", context: workerContext)
-                    note.notebook = nb
-                }
-            }
-            */
         }
-        /*
-        CoreDataStackManager.sharedInstance.performAsyncBackgroundBatchOperation { (workerContext) in
-            for photo in self.fetchedResultsController.fetchedObjects as! [Photo] {
-                let photoInContext = try! workerContext.existingObjectWithID(photo.objectID) as! Photo
-                if photoInContext.imageData == nil {
-                    photoInContext.getImageData()
-                    break
-                }
-            }
-            self.saveContext()
-        }
-        */
     }
+    
+    // MARK: Download Big Image
+    
+    // This method downloads and image in the background once it's
+    // finished, it runs the closure it receives as a parameter.
+    // This closure is called a completion handler
+    // Go download the image, and once you're done, do _this_ (the completion handler)
+    func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void){
+        
+        print("***** download big image")
+        DispatchQueue.global(qos: .userInitiated).async { () -> Void in
+            
+            // get the url
+            // get the NSData
+            // turn it into a UIImage
+            if let url = URL(string: imageURL),
+                let imgData = try? Data(contentsOf: url) {
+                // run the completion block
+                // always in the main queue, just in case!
+                DispatchQueue.main.async(execute: { () -> Void in
+                    handler(imgData)
+                })
+            }
+        }
+    }
+
     
     @IBAction func performPictureAction(_ sender: Any) {
     

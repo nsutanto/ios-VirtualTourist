@@ -159,7 +159,7 @@ class FlickrClient {
                     return
                 }
                 
-                print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
+                //print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
                 
                 self.convertDataWithCompletionHandler(data, completionHandlerConvertData: completionHandlerRequest)
             }
