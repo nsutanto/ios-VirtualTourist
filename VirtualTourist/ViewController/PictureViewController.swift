@@ -15,8 +15,9 @@ import CoreData
 extension PictureViewController: UICollectionViewDataSource {
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("***** Count = \(flickrImages?.count ?? 0)")
-        return flickrImages?.count ?? 0
+        //print("***** Count = \(flickrImages?.count ?? 0)")
+        //return flickrImages?.count ?? 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     // make a cell for each cell index path
@@ -25,6 +26,7 @@ extension PictureViewController: UICollectionViewDataSource {
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
+        print("***** Get Image")
         let image = fetchedResultsController.object(at: indexPath)
         
         if let imageData = image.imageBinary {
@@ -49,50 +51,28 @@ extension PictureViewController: UICollectionViewDataSource {
 
 extension PictureViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        //tableView.beginUpdates()
-        print("controller will change content")
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        
-        //print("controller didChange 0")
-        /*
-        let set = IndexSet(integer: sectionIndex)
-        
-        switch (type) {
-        case .insert:
-            tableView.insertSections(set, with: .fade)
-        case .delete:
-            tableView.deleteSections(set, with: .fade)
-        default:
-            // irrelevant in our case
-            break
-        }*/
+        // Reset indexes
+        insertIndexes = [IndexPath]()
+        deleteIndexes = [IndexPath]()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-        //print("controller didChange 1")
-        /*
+        // Assigned all the indexes so that we can update the cell accordingly
         switch(type) {
         case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            insertIndexes.append(newIndexPath!)
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [indexPath!], with: .fade)
-        case .move:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            deleteIndexes.append(newIndexPath!)
+        default:
+            break
         }
- */
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        //tableView.endUpdates()
-        // Download Images
-        
-        print("controller didChange 2")
+        collectionView.performBatchUpdates( {
+            self.collectionView.insertItems(at: insertIndexes)
+            self.collectionView.deleteItems(at: deleteIndexes)
+        }, completion: nil)
     }
 }
 
@@ -127,9 +107,15 @@ class PictureViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    // Selected Location from previous navigation controller
     var selectedLocation: Location!
+    // Core Data Stack
     var coreDataStack: CoreDataStack?
+    // List of flickr images
     var flickrImages : [Image]?
+    // Insert and Delete index for the fetched results controller
+    var insertIndexes: [IndexPath]!
+    var deleteIndexes: [IndexPath]!
     
     lazy var fetchedResultsController: NSFetchedResultsController<Image> = {
         
@@ -143,15 +129,19 @@ class PictureViewController: UIViewController {
                                                                   sectionNameKeyPath: nil,
                                                                   cacheName: nil)
         
+       
+        
+        return fetchedResultsController
+    }()
+    
+    func performFetch() {
         do {
             try fetchedResultsController.performFetch()
         } catch {
             // TODO : Perform error handling
             fatalError("Failed to initialize FetchedResultsController: \(error)")
         }
-        
-        return fetchedResultsController
-    }()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -165,6 +155,8 @@ class PictureViewController: UIViewController {
         collectionView.delegate = self
         fetchedResultsController.delegate = self
         
+        // Initialize fetched results controller from core data stack
+        performFetch()
         // Init Map
         initMap()
         // Init Photos
