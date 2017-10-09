@@ -15,8 +15,7 @@ import CoreData
 extension PictureViewController: UICollectionViewDataSource {
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return self.items.count
-        return 4
+        return flickrImages?.count ?? 0
     }
     
     // make a cell for each cell index path
@@ -34,7 +33,52 @@ extension PictureViewController: UICollectionViewDataSource {
 }
 
 extension PictureViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        //tableView.beginUpdates()
+        print("controller will change content")
+    }
     
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        
+        print("controller didChange 0")
+        /*
+        let set = IndexSet(integer: sectionIndex)
+        
+        switch (type) {
+        case .insert:
+            tableView.insertSections(set, with: .fade)
+        case .delete:
+            tableView.deleteSections(set, with: .fade)
+        default:
+            // irrelevant in our case
+            break
+        }*/
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        print("controller didChange 1")
+        /*
+        switch(type) {
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .update:
+            tableView.reloadRows(at: [indexPath!], with: .fade)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        }
+ */
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        //tableView.endUpdates()
+        // Download Images
+        
+        print("controller didChange 2")
+    }
 }
 
 extension PictureViewController: UICollectionViewDelegate {
@@ -144,6 +188,38 @@ class PictureViewController: UIViewController {
             // TODO: Perform alert
             }
         })
+    }
+    
+    private func downloadImages() {
+        coreDataStack?.performBackgroundBatchOperation { (workerContext) in
+            for image in self.flickrImages! {
+                if image.imageBinary == nil {
+                    
+                }
+            }
+            /*
+            for i in 1...100 {
+                let nb = Notebook(name: "Background notebook \(i)", context: workerContext)
+                
+                for _ in 1...100{
+                    let note = Note(text: "The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother's keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.", context: workerContext)
+                    note.notebook = nb
+                }
+            }
+            */
+        }
+        /*
+        CoreDataStackManager.sharedInstance.performAsyncBackgroundBatchOperation { (workerContext) in
+            for photo in self.fetchedResultsController.fetchedObjects as! [Photo] {
+                let photoInContext = try! workerContext.existingObjectWithID(photo.objectID) as! Photo
+                if photoInContext.imageData == nil {
+                    photoInContext.getImageData()
+                    break
+                }
+            }
+            self.saveContext()
+        }
+        */
     }
     
     @IBAction func performPictureAction(_ sender: Any) {
