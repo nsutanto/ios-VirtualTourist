@@ -10,13 +10,24 @@ import UIKit
 import MapKit
 import CoreData
 
-
+extension PictureViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let width = floor(collectionView.frame.size.width)
+        let height = floor(collectionView.frame.size.height)
+        
+        let numberAcross:CGFloat = ((width < height) ? 3.0 : 5.0)
+        
+        let itemSize = (width - ((numberAcross - 1) * flowLayout.minimumLineSpacing)) / numberAcross
+        
+        return CGSize(width: itemSize, height: itemSize)
+    }
+}
 
 extension PictureViewController: UICollectionViewDataSource {
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //print("***** Count = \(flickrImages?.count ?? 0)")
-        //return flickrImages?.count ?? 0
+        print("***** Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
@@ -26,25 +37,28 @@ extension PictureViewController: UICollectionViewDataSource {
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
-        print("***** Get Image")
+        //print("***** Get Image")
         let image = fetchedResultsController.object(at: indexPath)
         
+        cell.activityIndicator.startAnimating()
         if let imageData = image.imageBinary {
-            print("***** Assign Image")
+            //print("***** Assign Image")
             // assign image
             cell.imageView.image = UIImage(data: imageData as Data)
         }
         else {
-            print("***** Download Image")
+            //print("***** Download Image")
             // Download image
             downloadImage(imageURL: image.imageURL!) { (imageData) -> Void in
                 // Display it
                 cell.imageView.image = UIImage(data: imageData as Data)
-                    
+                // Save it to Core Data
+                image.imageBinary = imageData as NSData
                 // Stop animating
-                //cell.activityView.stopAnimating()
+                
             }
         }
+        cell.activityIndicator.stopAnimating()
         return cell
     }
 }
@@ -106,7 +120,7 @@ class PictureViewController: UIViewController {
     @IBOutlet weak var buttonPictureAction: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
-    
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     // Selected Location from previous navigation controller
     var selectedLocation: Location!
     // Core Data Stack
@@ -128,9 +142,6 @@ class PictureViewController: UIViewController {
                                                                   managedObjectContext: moc!,
                                                                   sectionNameKeyPath: nil,
                                                                   cacheName: nil)
-        
-       
-        
         return fetchedResultsController
     }()
     
@@ -155,12 +166,20 @@ class PictureViewController: UIViewController {
         collectionView.delegate = self
         fetchedResultsController.delegate = self
         
+        // Init Layout
+        initLayout()
         // Initialize fetched results controller from core data stack
         performFetch()
         // Init Map
         initMap()
         // Init Photos
         initPhotos()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        // Init Layout
+        initLayout()
+        
     }
     
     // Mark: Init Map
@@ -221,7 +240,7 @@ class PictureViewController: UIViewController {
     // finished, it runs the closure it receives as a parameter.
     // This closure is called a completion handler
     // Go download the image, and once you're done, do _this_ (the completion handler)
-    func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void){
+    private func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void){
         
         print("***** download big image")
         DispatchQueue.global(qos: .userInitiated).async { () -> Void in
@@ -238,6 +257,53 @@ class PictureViewController: UIViewController {
                 })
             }
         }
+    }
+    /*
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // Lay out the collection view so that cells take up 1/3 of the width,
+        // with no space in between.
+        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        
+        let width = floor(self.collectionView.frame.size.width/3)
+        layout.itemSize = CGSize(width: width, height: width)
+        print("***** Width \(width)")
+        
+        collectionView.collectionViewLayout = layout
+    }*/
+    
+    private func initLayout() {
+        
+        /*
+        print("**** init layout")
+        let space : CGFloat = 1
+        var height : CGFloat!
+        var width : CGFloat!
+        var numberOfPictures : CGFloat!
+        
+        numberOfPictures = 3
+        
+        if UIDevice.current.orientation.isPortrait {
+            width = (collectionView.frame.size.width / numberOfPictures) - space
+        }
+        else {
+            width = (collectionView.frame.size.height / numberOfPictures) - space
+        }
+        height = width
+        print("***** Collection View width = \(collectionView.frame.size.width)")
+        print("***** Collection View height = \(collectionView.frame.size.width)")
+        print("***** Width \(width)")
+        
+        let flowLayout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = (view.frame.size.width - (numberOfPictures * width)) / (numberOfPictures - 1)
+        flowLayout.itemSize = CGSize(width: width, height: height)
+        collectionView.collectionViewLayout = flowLayout
+         */
     }
 
     

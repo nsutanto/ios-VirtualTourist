@@ -201,7 +201,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="drx-yb-g7r">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="drx-yb-g7r">
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                         </imageView>
                                                     </subviews>
@@ -243,6 +243,7 @@
                     <connections>
                         <outlet property="buttonPictureAction" destination="0oh-J5-Tau" id="Xwm-cl-a8z"/>
                         <outlet property="collectionView" destination="Rsp-v2-vJ8" id="Ko7-b6-1OZ"/>
+                        <outlet property="flowLayout" destination="fSH-8R-F4A" id="9Yb-Ly-3x8"/>
                         <outlet property="mapView" destination="d8z-aY-3vD" id="deP-T8-jwa"/>
                     </connections>
                 </viewController>
