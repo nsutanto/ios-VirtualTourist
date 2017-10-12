@@ -11,9 +11,15 @@ import MapKit
 import CoreData
 
 extension PictureViewController: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        print("***** Section Count = \(fetchedResultsController.sections?.count ?? 0)")
+        return (fetchedResultsController.sections?.count)!
+    }
+    
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("***** Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
+        print("***** Object Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
@@ -23,28 +29,26 @@ extension PictureViewController: UICollectionViewDataSource {
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
-        //print("***** Get Image")
+        cell.activityIndicator.isHidden = false
+        cell.activityIndicator.startAnimating()
+        
         let image = fetchedResultsController.object(at: indexPath)
         
-        cell.activityIndicator.startAnimating()
-        if let imageData = image.imageBinary {
-            //print("***** Assign Image")
-            // assign image
-            cell.imageView.image = UIImage(data: imageData as Data)
+        if image.imageBinary != nil {
+            cell.imageView.image = UIImage(data: image.imageBinary! as Data)
         }
         else {
-            //print("***** Download Image")
             // Download image
             downloadImage(imageURL: image.imageURL!) { (imageData) -> Void in
                 // Display it
                 cell.imageView.image = UIImage(data: imageData as Data)
-                // Save it to Core Data
                 image.imageBinary = imageData as NSData
-                // Stop animating
-                
+                // Save to core data
+                self.coreDataStack?.save()
             }
         }
         cell.activityIndicator.stopAnimating()
+        cell.activityIndicator.isHidden = true
         return cell
     }
 }
@@ -58,7 +62,7 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         // Assigned all the indexes so that we can update the cell accordingly
-        switch(type) {
+        switch (type) {
         case .insert:
             insertIndexes.append(newIndexPath!)
         case .delete:
