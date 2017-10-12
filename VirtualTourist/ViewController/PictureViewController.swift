@@ -96,12 +96,12 @@ extension PictureViewController: UICollectionViewDelegate {
             cell?.alpha = 1
         }
    
+        // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
+        // else set to default title
         if (selectedIndexes.count == 0) {
-            // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
-            buttonPictureAction.titleLabel?.text = NEW_COLLECTION
+            buttonPictureAction.setTitle(NEW_COLLECTION, for: .normal)
         } else {
-            // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
-            buttonPictureAction.titleLabel?.text = REMOVE_IMAGE
+            buttonPictureAction.setTitle(REMOVE_IMAGE, for: .normal)
         }
     }
 }
@@ -194,14 +194,7 @@ class PictureViewController: UIViewController {
         // Init Photos
         initPhotos()
     }
-    
-    /*
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        // Init Layout
-        initLayout()
-        
-    }
-     */
+
     
     // Mark: Init Map
     private func initMap() {
@@ -237,7 +230,7 @@ class PictureViewController: UIViewController {
             }
             else {
                 print("**** Error requesting flickr")
-            // TODO: Perform alert
+                // TODO: Perform alert
             }
         })
     }
@@ -263,7 +256,6 @@ class PictureViewController: UIViewController {
     // Go download the image, and once you're done, do _this_ (the completion handler)
     private func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void){
         
-        print("***** download big image")
         DispatchQueue.global(qos: .userInitiated).async { () -> Void in
             
             // get the url
@@ -314,6 +306,9 @@ class PictureViewController: UIViewController {
     
     @IBAction func performPictureAction(_ sender: Any) {
         if (buttonPictureAction.titleLabel?.text == NEW_COLLECTION) {
+            // Delete all images
+            clearImages()
+            // Get new images
             
         } else {
             deleteSelectedImage()
