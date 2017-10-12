@@ -40,6 +40,7 @@ class FlickrClient {
             FlickrParameterKeys.Format: FlickrParameterValues.Json,
             FlickrParameterKeys.NoJsonCallback: FlickrParameterValues.JsonCallBackValue,
             FlickrParameterKeys.PerPage: FlickrParameterValues.PerPageValue,
+            FlickrParameterKeys.Page: FlickrParameterValues.PageValue,
             FlickrParameterKeys.Latitude: String(latitude),
             FlickrParameterKeys.Longitude: String(longitude)
         ]

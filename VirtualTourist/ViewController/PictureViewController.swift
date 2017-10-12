@@ -10,20 +10,6 @@ import UIKit
 import MapKit
 import CoreData
 
-extension PictureViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let width = floor(collectionView.frame.size.width)
-        let height = floor(collectionView.frame.size.height)
-        
-        let numberAcross:CGFloat = ((width < height) ? 3.0 : 5.0)
-        
-        let itemSize = (width - ((numberAcross - 1) * flowLayout.minimumLineSpacing)) / numberAcross
-        
-        return CGSize(width: itemSize, height: itemSize)
-    }
-}
-
 extension PictureViewController: UICollectionViewDataSource {
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -92,6 +78,17 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
 
 extension PictureViewController: UICollectionViewDelegate {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // When user select one of the cell
+        let cell = collectionView.cellForItem(at: indexPath as IndexPath)
+        // Change selected cell color
+        cell?.alpha = 0.5
+        
+        // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
+        buttonPictureAction.titleLabel?.text = "Remove selected pictures"
+        
+        selectedIndexes.append(indexPath)
+    }
 }
 
 extension PictureViewController: MKMapViewDelegate {
@@ -120,6 +117,7 @@ class PictureViewController: UIViewController {
     @IBOutlet weak var buttonPictureAction: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
+    
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     // Selected Location from previous navigation controller
     var selectedLocation: Location!
@@ -130,6 +128,8 @@ class PictureViewController: UIViewController {
     // Insert and Delete index for the fetched results controller
     var insertIndexes: [IndexPath]!
     var deleteIndexes: [IndexPath]!
+    // Selected Index is used to delete the pictures
+    var selectedIndexes: [IndexPath]!
     
     lazy var fetchedResultsController: NSFetchedResultsController<Image> = {
         
@@ -176,11 +176,13 @@ class PictureViewController: UIViewController {
         initPhotos()
     }
     
+    /*
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         // Init Layout
         initLayout()
         
     }
+     */
     
     // Mark: Init Map
     private func initMap() {
@@ -258,52 +260,36 @@ class PictureViewController: UIViewController {
             }
         }
     }
-    /*
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        // Lay out the collection view so that cells take up 1/3 of the width,
-        // with no space in between.
-        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
-        
-        let width = floor(self.collectionView.frame.size.width/3)
-        layout.itemSize = CGSize(width: width, height: width)
-        print("***** Width \(width)")
-        
-        collectionView.collectionViewLayout = layout
-    }*/
     
-    private func initLayout() {
+    // Delete selected image
+    private func deleteSelectedImage() {
         
-        /*
-        print("**** init layout")
-        let space : CGFloat = 1
-        var height : CGFloat!
-        var width : CGFloat!
-        var numberOfPictures : CGFloat!
-        
-        numberOfPictures = 3
-        
-        if UIDevice.current.orientation.isPortrait {
-            width = (collectionView.frame.size.width / numberOfPictures) - space
+        for index in selectedIndexes {
+            coreDataStack?.context.delete(fetchedResultsController.object(at: index))
         }
-        else {
-            width = (collectionView.frame.size.height / numberOfPictures) - space
-        }
-        height = width
-        print("***** Collection View width = \(collectionView.frame.size.width)")
-        print("***** Collection View height = \(collectionView.frame.size.width)")
-        print("***** Width \(width)")
+        // reset indexes
+        selectedIndexes.removeAll()
+        // core data save. Fetch results controller will magically update the UI
+        coreDataStack?.save()
+    }
+    
+    // Delete all the existing images
+    func clearImages() {
         
-        let flowLayout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        flowLayout.minimumInteritemSpacing = space
-        flowLayout.minimumLineSpacing = (view.frame.size.width - (numberOfPictures * width)) / (numberOfPictures - 1)
-        flowLayout.itemSize = CGSize(width: width, height: height)
-        collectionView.collectionViewLayout = flowLayout
-         */
+        for object in fetchedResultsController.fetchedObjects! {
+            coreDataStack?.context.delete(object)
+        }
+        coreDataStack?.save()
+    }
+    
+    func initLayout() {
+        
+        //let space:CGFloat = 3.0
+        //let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        //flowLayout =
+        //flowLayout.minimumInteritemSpacing = space
+        //flowLayout.minimumLineSpacing = space
+        //flowLayout.itemSize = CGSize(width: dimension, height: dimension)
     }
 
     

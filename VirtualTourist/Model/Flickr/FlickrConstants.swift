@@ -38,6 +38,7 @@ extension FlickrClient {
         static let Format = "format"
         static let NoJsonCallback = "nojsoncallback"
         static let PerPage = "perpage"
+        static let Page = "page"
     }
     
     // MARK: Flickr Parameter Values
@@ -48,6 +49,7 @@ extension FlickrClient {
         static let Json = "json"
         static let JsonCallBackValue = "1"
         static let PerPageValue = "21"
+        static let PageValue = "1"
     }
     
     // MARK: Flickr Response Keys

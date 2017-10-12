@@ -243,7 +243,7 @@
                     <connections>
                         <outlet property="buttonPictureAction" destination="0oh-J5-Tau" id="Xwm-cl-a8z"/>
                         <outlet property="collectionView" destination="Rsp-v2-vJ8" id="Ko7-b6-1OZ"/>
-                        <outlet property="flowLayout" destination="fSH-8R-F4A" id="9Yb-Ly-3x8"/>
+                        <outlet property="flowLayout" destination="fSH-8R-F4A" id="bQY-Yh-gda"/>
                         <outlet property="mapView" destination="d8z-aY-3vD" id="deP-T8-jwa"/>
                     </connections>
                 </viewController>
