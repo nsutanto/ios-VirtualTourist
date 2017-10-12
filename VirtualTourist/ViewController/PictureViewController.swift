@@ -62,7 +62,7 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             insertIndexes.append(newIndexPath!)
         case .delete:
-            deleteIndexes.append(newIndexPath!)
+            deleteIndexes.append(indexPath!)
         default:
             break
         }
@@ -77,17 +77,32 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
 }
 
 extension PictureViewController: UICollectionViewDelegate {
-    
+  
+    // When user select one of the cell
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // When user select one of the cell
+        
+        // Get the specific cell
         let cell = collectionView.cellForItem(at: indexPath as IndexPath)
-        // Change selected cell color
-        cell?.alpha = 0.5
-        
-        // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
-        buttonPictureAction.titleLabel?.text = "Remove selected pictures"
-        
-        selectedIndexes.append(indexPath)
+        if (!selectedIndexes.contains(indexPath)) {
+            // Add to selected index
+            selectedIndexes.append(indexPath)
+            // Change selected cell color
+            cell?.alpha = 0.5
+        } else {
+            // Remove index from selected indexes
+            let index = selectedIndexes.index(of: indexPath)
+            selectedIndexes.remove(at: index!)
+            // Change selected cell color
+            cell?.alpha = 1
+        }
+   
+        if (selectedIndexes.count == 0) {
+            // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
+            buttonPictureAction.titleLabel?.text = NEW_COLLECTION
+        } else {
+            // Whenever user selects one or more cells, the bar button changes to Remove seleceted pictures
+            buttonPictureAction.titleLabel?.text = REMOVE_IMAGE
+        }
     }
 }
 
@@ -129,7 +144,11 @@ class PictureViewController: UIViewController {
     var insertIndexes: [IndexPath]!
     var deleteIndexes: [IndexPath]!
     // Selected Index is used to delete the pictures
-    var selectedIndexes: [IndexPath]!
+    var selectedIndexes = [IndexPath]()
+    // Some String Constant
+    let REMOVE_IMAGE = "Remove selected pictures"
+    let NEW_COLLECTION = "New Collection"
+    
     
     lazy var fetchedResultsController: NSFetchedResultsController<Image> = {
         
@@ -167,7 +186,7 @@ class PictureViewController: UIViewController {
         fetchedResultsController.delegate = self
         
         // Init Layout
-        initLayout()
+        //[initLayout()
         // Initialize fetched results controller from core data stack
         performFetch()
         // Init Map
@@ -294,7 +313,11 @@ class PictureViewController: UIViewController {
 
     
     @IBAction func performPictureAction(_ sender: Any) {
-    
+        if (buttonPictureAction.titleLabel?.text == NEW_COLLECTION) {
+            
+        } else {
+            deleteSelectedImage()
+        }
     }
 }
 
