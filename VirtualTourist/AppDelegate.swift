@@ -25,8 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("Error droping all objects in DB")
         }
-         */
-        // Search
+        */
     }
     
 
