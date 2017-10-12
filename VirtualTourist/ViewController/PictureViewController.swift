@@ -12,11 +12,6 @@ import CoreData
 
 extension PictureViewController: UICollectionViewDataSource {
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        print("***** Section Count = \(fetchedResultsController.sections?.count ?? 0)")
-        return (fetchedResultsController.sections?.count)!
-    }
-    
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         print("***** Object Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
@@ -142,8 +137,6 @@ class PictureViewController: UIViewController {
     var selectedLocation: Location!
     // Core Data Stack
     var coreDataStack: CoreDataStack?
-    // List of flickr images
-    var flickrImages : [Image]?
     // Insert and Delete index for the fetched results controller
     var insertIndexes: [IndexPath]!
     var deleteIndexes: [IndexPath]!
@@ -213,20 +206,14 @@ class PictureViewController: UIViewController {
     }
     
     private func initPhotos() {
-        flickrImages = fetchedResultsController.fetchedObjects!
-        
-        if (flickrImages?.count == 0) {
+        if (fetchedResultsController.fetchedObjects?.count == 0) {
             getPhotoFromFlickr()
-        } else {
-            print("***** Flickr image is not 0")
-            // TODO
         }
     }
     
     private func getPhotoFromFlickr() {
         FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude, selectedLocation.latitude, completionHandlerSearchPhotos: { (result, error ) in
             if (error == nil) {
-                print("**** Get Data from flickr")
                 for urlString in result! {
                     let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                     self.selectedLocation.addToLocationToImage(image)
@@ -241,7 +228,7 @@ class PictureViewController: UIViewController {
     
     private func downloadImages() {
         coreDataStack?.performBackgroundBatchOperation { (workerContext) in
-            for image in self.flickrImages! {
+            for image in self.fetchedResultsController.fetchedObjects! {
                 if image.imageBinary == nil {
                     let imageURL = URL(string: image.imageURL!)
                     if let imageData = try? Data(contentsOf: imageURL!) {
