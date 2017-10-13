@@ -14,12 +14,14 @@ extension PictureViewController: UICollectionViewDataSource {
     
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("***** Object Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
+        //print("***** Object Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     // make a cell for each cell index path
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        
         
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
@@ -30,17 +32,28 @@ extension PictureViewController: UICollectionViewDataSource {
         let image = fetchedResultsController.object(at: indexPath)
         
         if image.imageBinary != nil {
-            cell.imageView.image = UIImage(data: image.imageBinary! as Data)
+            print("***** Image binary exist Index path = \(indexPath)")
+            performUIUpdatesOnMain {
+                cell.imageView.image = UIImage(data: image.imageBinary! as Data)
+            }
         }
         else {
+            print("***** Image binary DOWNLOAD = \(indexPath)")
             // Download image
-            downloadImage(imageURL: image.imageURL!) { (imageData) -> Void in
-                // Display it
-                cell.imageView.image = UIImage(data: imageData as Data)
-                image.imageBinary = imageData as NSData
-                // Save to core data
-                self.coreDataStack?.save()
-            }
+            let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
+                if (error == nil) {
+                    performUIUpdatesOnMain {
+                        cell.imageView.image = UIImage(data: imageData!)
+                    }
+                    
+                    image.imageBinary = imageData as NSData?
+                    self.coreDataStack?.save()
+                    
+                } else {
+                    print("***** Download error")
+                }
+            })
+            cell.taskToCancelifCellIsReused = task
         }
         cell.activityIndicator.stopAnimating()
         cell.activityIndicator.isHidden = true
@@ -51,8 +64,8 @@ extension PictureViewController: UICollectionViewDataSource {
 extension PictureViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Reset indexes
-        insertIndexes = [IndexPath]()
-        deleteIndexes = [IndexPath]()
+        insertIndexes.removeAll()
+        deleteIndexes.removeAll()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -138,8 +151,8 @@ class PictureViewController: UIViewController {
     // Core Data Stack
     var coreDataStack: CoreDataStack?
     // Insert and Delete index for the fetched results controller
-    var insertIndexes: [IndexPath]!
-    var deleteIndexes: [IndexPath]!
+    var insertIndexes = [IndexPath]()
+    var deleteIndexes = [IndexPath]()
     // Selected Index is used to delete the pictures
     var selectedIndexes = [IndexPath]()
     // Some String Constant
@@ -245,7 +258,7 @@ class PictureViewController: UIViewController {
     // finished, it runs the closure it receives as a parameter.
     // This closure is called a completion handler
     // Go download the image, and once you're done, do _this_ (the completion handler)
-    private func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void){
+    private func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void) {
         
         DispatchQueue.global(qos: .userInitiated).async { () -> Void in
             

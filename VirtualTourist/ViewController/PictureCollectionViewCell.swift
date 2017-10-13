@@ -9,7 +9,7 @@
 import Foundation
 
 import UIKit
-class PictureCollectionViewCell: UICollectionViewCell {
+class PictureCollectionViewCell: CellCancelTask {
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!

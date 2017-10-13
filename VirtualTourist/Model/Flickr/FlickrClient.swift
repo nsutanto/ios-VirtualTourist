@@ -128,6 +128,37 @@ class FlickrClient {
  
     }
     
+    func downloadImage(imageURL: String, completionHandler: @escaping(_ imageData: Data?, _ error: NSError?) ->  Void) -> URLSessionTask {
+        
+        /*
+ if let url = URL(string: imageURL),
+ let imgData = try? Data(contentsOf: url) {
+ // run the completion block
+ // always in the main queue, just in case!
+ DispatchQueue.main.async(execute: { () -> Void in
+ handler(imgData)
+ })
+ }
+ */
+        let url = URL(string: imageURL)
+        let request = URLRequest(url: url!)
+        
+        let task = session.dataTask(with: request) {data, response, downloadError in
+            
+            if let error = downloadError {
+                //let newError = TheMovieDB.errorForData(data, response: response, error: error)
+                //completionHandler(imageData: nil, error: newError)
+                // TODO : Handle error
+                print("***** Task Download error")
+            } else {
+                completionHandler(data, nil)
+            }
+        }
+        
+        task.resume()
+        
+        return task
+    }
     
     private func performRequest(request: NSMutableURLRequest,
                                 completionHandlerRequest: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void)

@@ -19,13 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func preloadData() {
         
         // Remove previous stuff (if any)
-        /*
         do {
             try stack.dropAllData()
         } catch {
             print("Error droping all objects in DB")
         }
-        */
+        
     }
     
 
@@ -33,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // preload data from CoreData
         preloadData()
         // Start Autosaving
-        stack.autoSave(10)
+        //stack.autoSave(10)
         return true
     }
 
