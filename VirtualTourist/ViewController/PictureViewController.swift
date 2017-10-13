@@ -242,7 +242,7 @@ class PictureViewController: UIViewController {
     }
     
     private func getPhotoFromFlickr() {
-        FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude, selectedLocation.latitude, completionHandlerSearchPhotos: { (result, error ) in
+        FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude, selectedLocation.latitude, completionHandlerSearchPhotos: { (result, pageNumber, error ) in
             if (error == nil) {
                 for urlString in result! {
                     let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
