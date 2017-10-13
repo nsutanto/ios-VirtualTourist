@@ -185,6 +185,7 @@ class PictureViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        flowLayout = UICollectionViewFlowLayout()
         
         // Initialize core data stack
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -196,7 +197,7 @@ class PictureViewController: UIViewController {
         fetchedResultsController.delegate = self
         
         // Init Layout
-        //[initLayout()
+        initLayout(size: view.frame.size)
         // Initialize fetched results controller from core data stack
         performFetch()
         // Init Map
@@ -205,6 +206,27 @@ class PictureViewController: UIViewController {
         initPhotos()
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        initLayout(size: size)
+    }
+    
+    // Mark : Init Layout
+    func initLayout(size: CGSize) {
+        print("init layout")
+        let space: CGFloat = 3.0
+        let dimension: CGFloat
+        
+        if size.width < size.height {
+            dimension = (size.width - (2 * space)) / 3.0
+        } else {
+            dimension = (size.width - (5 * space)) / 6.0
+        }
+        
+        flowLayout?.minimumInteritemSpacing = space
+        flowLayout?.minimumLineSpacing = space
+        flowLayout?.itemSize = CGSize(width: dimension, height: dimension)
+    }
     
     // Mark: Init Map
     private func initMap() {
@@ -218,6 +240,7 @@ class PictureViewController: UIViewController {
         }
     }
     
+    // Mark: Init Photos
     private func initPhotos() {
         if (fetchedResultsController.fetchedObjects?.count == 0) {
             getPhotoFromFlickr()
