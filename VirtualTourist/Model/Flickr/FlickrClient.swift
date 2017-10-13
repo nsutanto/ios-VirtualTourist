@@ -29,7 +29,7 @@ class FlickrClient {
     func searchPhotos(_ longitude: Double,
                       _ latitude: Double,
                       _ pageNumber: Int = 1,
-                      completionHandlerSearchPhotos: @escaping (_ result: [String]?, _ pageNumber: Int, _ error: NSError?)
+                      completionHandlerSearchPhotos: @escaping (_ result: [String]?, _ pageNumber: Int?, _ error: NSError?)
         -> Void) {
      
         /* 1. Specify parameters, method (if has {key}), and HTTP body (if POST) */
@@ -53,12 +53,16 @@ class FlickrClient {
             
             /* 3. Send the desired value(s) to completion handler */
             if let error = error {
-                completionHandlerSearchPhotos(nil, 1, error)
+                completionHandlerSearchPhotos(nil, nil, error)
             } else {
                 
                 /* GUARD: Is the "photos" key in our result? */
                 guard let photosDictionary = parsedResult?[FlickrResponseKeys.Photos] as? [String:AnyObject] else {
                     // TODO : perform error handling
+                    return
+                }
+                
+                guard let pageNumberOut = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
                     return
                 }
                 
@@ -77,7 +81,7 @@ class FlickrClient {
                     for photo in photosArray {
                         let photoDictionary = photo as [String:Any]
                         
-                        /* GUARD: Does our photo have a key for 'url_m'? */
+                        /* GUARD: Does our photo have a key for 'url_q'? */
                         guard let imageUrlString = photoDictionary[FlickrResponseKeys.SquareURL] as? String else {
                             // TODO : perform error handling
                             return
@@ -86,9 +90,7 @@ class FlickrClient {
                         urlArray.append(imageUrlString)
                     }
                     
-                     completionHandlerSearchPhotos(urlArray, 1, nil)
-                    
-                    //let randomPhotoIndex = Int(arc4random_uniform(UInt32(photosArray.count)))
+                     completionHandlerSearchPhotos(urlArray, pageNumberOut, nil)
                 }
             }
         }
