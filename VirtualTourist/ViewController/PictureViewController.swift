@@ -185,7 +185,6 @@ class PictureViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        flowLayout = UICollectionViewFlowLayout()
         
         // Initialize core data stack
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -213,15 +212,10 @@ class PictureViewController: UIViewController {
     
     // Mark : Init Layout
     func initLayout(size: CGSize) {
-        print("init layout")
         let space: CGFloat = 3.0
         let dimension: CGFloat
         
-        if size.width < size.height {
-            dimension = (size.width - (2 * space)) / 3.0
-        } else {
-            dimension = (size.width - (5 * space)) / 6.0
-        }
+        dimension = (size.width - (2 * space)) / 3.0
         
         flowLayout?.minimumInteritemSpacing = space
         flowLayout?.minimumLineSpacing = space
