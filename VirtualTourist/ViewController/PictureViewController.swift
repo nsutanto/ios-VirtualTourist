@@ -26,8 +26,10 @@ extension PictureViewController: UICollectionViewDataSource {
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
-        cell.activityIndicator.isHidden = false
-        cell.activityIndicator.startAnimating()
+        performUIUpdatesOnMain {
+            cell.activityIndicator.isHidden = false
+            cell.activityIndicator.startAnimating()
+        }
         
         let image = fetchedResultsController.object(at: indexPath)
         
@@ -55,8 +57,10 @@ extension PictureViewController: UICollectionViewDataSource {
             })
             cell.taskToCancelifCellIsReused = task
         }
-        cell.activityIndicator.stopAnimating()
-        cell.activityIndicator.isHidden = true
+        performUIUpdatesOnMain {
+            cell.activityIndicator.stopAnimating()
+            cell.activityIndicator.isHidden = true
+        }
         return cell
     }
 }
@@ -304,7 +308,26 @@ class PictureViewController: UIViewController {
             let pageNumberRandom = Int(arc4random_uniform(UInt32(totalPageNumber)))
             print("***** Random number = \(pageNumberRandom) total page number = \(totalPageNumber)")
             getPhotoFromFlickr(pageNumberRandom)
+            performFetch()
             downloadImages()
+            /*
+            for image in self.fetchedResultsController.fetchedObjects! {
+            //downloadImages()
+            let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
+                if (error == nil) {
+                    performUIUpdatesOnMain {
+                        cell.imageView.image = UIImage(data: imageData!)
+                    }
+                    
+                    image.imageBinary = imageData as NSData?
+                    self.coreDataStack?.save()
+                    
+                } else {
+                    print("***** Download error")
+                }
+            })
+            cell.taskToCancelifCellIsReused = task*/
+            //}
         } else {
             deleteSelectedImage()
         }
