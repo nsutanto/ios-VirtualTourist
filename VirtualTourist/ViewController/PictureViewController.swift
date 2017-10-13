@@ -26,8 +26,10 @@ extension PictureViewController: UICollectionViewDataSource {
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
-        cell.activityIndicator.isHidden = false
-        cell.activityIndicator.startAnimating()
+        performUIUpdatesOnMain {
+            cell.activityIndicator.isHidden = false
+            cell.activityIndicator.startAnimating()
+        }
         
         let image = fetchedResultsController.object(at: indexPath)
         
@@ -55,8 +57,10 @@ extension PictureViewController: UICollectionViewDataSource {
             })
             cell.taskToCancelifCellIsReused = task
         }
-        cell.activityIndicator.stopAnimating()
-        cell.activityIndicator.isHidden = true
+        performUIUpdatesOnMain {
+            cell.activityIndicator.stopAnimating()
+            cell.activityIndicator.isHidden = true
+        }
         return cell
     }
 }
@@ -155,6 +159,8 @@ class PictureViewController: UIViewController {
     var deleteIndexes = [IndexPath]()
     // Selected Index is used to delete the pictures
     var selectedIndexes = [IndexPath]()
+    // Total page number for flickr. Init to 1 for default. Once we get the first request, we will generate random number.
+    var totalPageNumber = 1
     // Some String Constant
     let REMOVE_IMAGE = "Remove selected pictures"
     let NEW_COLLECTION = "New Collection"
@@ -237,17 +243,21 @@ class PictureViewController: UIViewController {
     // Mark: Init Photos
     private func initPhotos() {
         if (fetchedResultsController.fetchedObjects?.count == 0) {
-            getPhotoFromFlickr()
+            getPhotoFromFlickr(totalPageNumber)
         }
     }
     
-    private func getPhotoFromFlickr() {
-        FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude, selectedLocation.latitude, completionHandlerSearchPhotos: { (result, error ) in
+    private func getPhotoFromFlickr(_ pageNumber: Int) {
+        FlickrClient.sharedInstance().searchPhotos(selectedLocation.longitude,
+                                                   selectedLocation.latitude,
+                                                   pageNumber,
+                                                   completionHandlerSearchPhotos: { (result, pageNumberResult, error ) in
             if (error == nil) {
                 for urlString in result! {
                     let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                     self.selectedLocation.addToLocationToImage(image)
                 }
+                self.totalPageNumber = pageNumberResult!
             }
             else {
                 print("**** Error requesting flickr")
@@ -265,30 +275,6 @@ class PictureViewController: UIViewController {
                         image.imageBinary = imageData as NSData
                     }
                 }
-            }
-        }
-    }
-    
-    // MARK: Download Big Image
-    
-    // This method downloads and image in the background once it's
-    // finished, it runs the closure it receives as a parameter.
-    // This closure is called a completion handler
-    // Go download the image, and once you're done, do _this_ (the completion handler)
-    private func downloadImage(imageURL: String, completionHandler handler: @escaping (_ imgData: Data) -> Void) {
-        
-        DispatchQueue.global(qos: .userInitiated).async { () -> Void in
-            
-            // get the url
-            // get the NSData
-            // turn it into a UIImage
-            if let url = URL(string: imageURL),
-                let imgData = try? Data(contentsOf: url) {
-                // run the completion block
-                // always in the main queue, just in case!
-                DispatchQueue.main.async(execute: { () -> Void in
-                    handler(imgData)
-                })
             }
         }
     }
@@ -314,23 +300,34 @@ class PictureViewController: UIViewController {
         coreDataStack?.save()
     }
     
-    func initLayout() {
-        
-        //let space:CGFloat = 3.0
-        //let dimension = (view.frame.size.width - (2 * space)) / 3.0
-        //flowLayout =
-        //flowLayout.minimumInteritemSpacing = space
-        //flowLayout.minimumLineSpacing = space
-        //flowLayout.itemSize = CGSize(width: dimension, height: dimension)
-    }
-
-    
     @IBAction func performPictureAction(_ sender: Any) {
         if (buttonPictureAction.titleLabel?.text == NEW_COLLECTION) {
             // Delete all images
             clearImages()
             // Get new images
-            
+            let pageNumberRandom = Int(arc4random_uniform(UInt32(totalPageNumber)))
+            print("***** Random number = \(pageNumberRandom) total page number = \(totalPageNumber)")
+            getPhotoFromFlickr(pageNumberRandom)
+            performFetch()
+            downloadImages()
+            /*
+            for image in self.fetchedResultsController.fetchedObjects! {
+            //downloadImages()
+            let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
+                if (error == nil) {
+                    performUIUpdatesOnMain {
+                        cell.imageView.image = UIImage(data: imageData!)
+                    }
+                    
+                    image.imageBinary = imageData as NSData?
+                    self.coreDataStack?.save()
+                    
+                } else {
+                    print("***** Download error")
+                }
+            })
+            cell.taskToCancelifCellIsReused = task*/
+            //}
         } else {
             deleteSelectedImage()
         }

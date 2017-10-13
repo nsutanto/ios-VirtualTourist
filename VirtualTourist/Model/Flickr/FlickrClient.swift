@@ -28,7 +28,8 @@ class FlickrClient {
     
     func searchPhotos(_ longitude: Double,
                       _ latitude: Double,
-                      completionHandlerSearchPhotos: @escaping (_ result: [String]?, _ error: NSError?)
+                      _ pageNumber: Int = 1,
+                      completionHandlerSearchPhotos: @escaping (_ result: [String]?, _ pageNumber: Int?, _ error: NSError?)
         -> Void) {
      
         /* 1. Specify parameters, method (if has {key}), and HTTP body (if POST) */
@@ -36,11 +37,11 @@ class FlickrClient {
             FlickrParameterKeys.Method: Methods.Search,
             FlickrParameterKeys.APIKey: Constants.APIKey,
             FlickrParameterKeys.SafeSearch: FlickrParameterValues.UseSafeSearch,
-            FlickrParameterKeys.Extras: FlickrParameterValues.MediumURL,
+            FlickrParameterKeys.Extras: FlickrParameterValues.SquareURL,
             FlickrParameterKeys.Format: FlickrParameterValues.Json,
             FlickrParameterKeys.NoJsonCallback: FlickrParameterValues.JsonCallBackValue,
             FlickrParameterKeys.PerPage: FlickrParameterValues.PerPageValue,
-            FlickrParameterKeys.Page: FlickrParameterValues.PageValue,
+            FlickrParameterKeys.Page: String(pageNumber),
             FlickrParameterKeys.Latitude: String(latitude),
             FlickrParameterKeys.Longitude: String(longitude)
         ]
@@ -52,12 +53,16 @@ class FlickrClient {
             
             /* 3. Send the desired value(s) to completion handler */
             if let error = error {
-                completionHandlerSearchPhotos(nil, error)
+                completionHandlerSearchPhotos(nil, nil, error)
             } else {
                 
                 /* GUARD: Is the "photos" key in our result? */
                 guard let photosDictionary = parsedResult?[FlickrResponseKeys.Photos] as? [String:AnyObject] else {
                     // TODO : perform error handling
+                    return
+                }
+                
+                guard let pageNumberOut = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
                     return
                 }
                 
@@ -71,15 +76,13 @@ class FlickrClient {
                     // TODO : perform error handling
                     return
                 } else {
-                    print("Number of photos : \(photosArray.count)")
-                    
                     var urlArray = [String]()
                     
                     for photo in photosArray {
                         let photoDictionary = photo as [String:Any]
                         
-                        /* GUARD: Does our photo have a key for 'url_m'? */
-                        guard let imageUrlString = photoDictionary[FlickrResponseKeys.MediumURL] as? String else {
+                        /* GUARD: Does our photo have a key for 'url_q'? */
+                        guard let imageUrlString = photoDictionary[FlickrResponseKeys.SquareURL] as? String else {
                             // TODO : perform error handling
                             return
                         }
@@ -87,42 +90,8 @@ class FlickrClient {
                         urlArray.append(imageUrlString)
                     }
                     
-                     completionHandlerSearchPhotos(urlArray, nil)
-                    
-                    //let randomPhotoIndex = Int(arc4random_uniform(UInt32(photosArray.count)))
-                    //let photoDictionary = photosArray[randomPhotoIndex] as [String: AnyObject]
-                    //let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String
-                    
-                    /* GUARD: Does our photo have a key for 'url_m'? */
-                    //guard let imageUrlString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                    //    displayError("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
-                    //    return
-                    //}
-                    
-                    // if an image exists at the url, set the image and title
-                    //let imageURL = URL(string: imageUrlString)
-                    //if let imageData = try? Data(contentsOf: imageURL!) {
-                    //    performUIUpdatesOnMain {
-                    //        self.setUIEnabled(true)
-                    //        self.photoImageView.image = UIImage(data: imageData)
-                    //        self.photoTitleLabel.text = photoTitle ?? "(Untitled)"
-                    //    }
-                    //} else {
-                    //    displayError("Image does not exist at \(imageURL)")
-                    //}
+                     completionHandlerSearchPhotos(urlArray, pageNumberOut, nil)
                 }
-
-               
-                /*if let results = parsedResult?[GetStudentJSONResponseKeys.StudentResult] as? [[String:AnyObject]] {
-                    
-                    self.studentInformations = StudentInformation.StudentInformationsFromResults(results)
-                    
-                    SharedData.sharedInstance.studentInformations = self.studentInformations!
-                    completionHandlerLocations(self.studentInformations, nil)
-                } else {
-                    completionHandlerLocations(nil, NSError(domain: "getStudentLocations parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentLocations"]))
-                }
-               */
             }
         }
  
@@ -130,23 +99,12 @@ class FlickrClient {
     
     func downloadImage(imageURL: String, completionHandler: @escaping(_ imageData: Data?, _ error: NSError?) ->  Void) -> URLSessionTask {
         
-        /*
- if let url = URL(string: imageURL),
- let imgData = try? Data(contentsOf: url) {
- // run the completion block
- // always in the main queue, just in case!
- DispatchQueue.main.async(execute: { () -> Void in
- handler(imgData)
- })
- }
- */
         let url = URL(string: imageURL)
         let request = URLRequest(url: url!)
         
         let task = session.dataTask(with: request) {data, response, downloadError in
             
             if let error = downloadError {
-                //let newError = TheMovieDB.errorForData(data, response: response, error: error)
                 //completionHandler(imageData: nil, error: newError)
                 // TODO : Handle error
                 print("***** Task Download error")
@@ -156,7 +114,6 @@ class FlickrClient {
         }
         
         task.resume()
-        
         return task
     }
     
@@ -192,12 +149,10 @@ class FlickrClient {
                 }
                 
                 //print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
-                
                 self.convertDataWithCompletionHandler(data, completionHandlerConvertData: completionHandlerRequest)
             }
             
             task.resume()
-            
             return task
     }
     

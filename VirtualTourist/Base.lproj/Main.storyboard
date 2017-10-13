@@ -106,9 +106,11 @@
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="poa-qs-aP8">
                                                             <rect key="frame" x="0.0" y="0.0" width="112" height="110"/>
+                                                            <color key="backgroundColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         </imageView>
-                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Isw-kr-Zam">
-                                                            <rect key="frame" x="46" y="45" width="20" height="20"/>
+                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Isw-kr-Zam">
+                                                            <rect key="frame" x="38" y="37" width="37" height="37"/>
+                                                            <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         </activityIndicatorView>
                                                     </subviews>
                                                 </view>
@@ -121,7 +123,7 @@
                                                     <constraint firstItem="poa-qs-aP8" firstAttribute="top" secondItem="Gg6-aN-AUb" secondAttribute="top" id="yl0-BP-c57"/>
                                                 </constraints>
                                                 <connections>
-                                                    <outlet property="activityIndicator" destination="Isw-kr-Zam" id="uo6-aC-cA4"/>
+                                                    <outlet property="activityIndicator" destination="Isw-kr-Zam" id="hyM-ar-81L"/>
                                                     <outlet property="imageView" destination="poa-qs-aP8" id="d1V-iP-83K"/>
                                                 </connections>
                                             </collectionViewCell>
