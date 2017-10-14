@@ -13,7 +13,6 @@ class FlickrClient {
     
     var session = URLSession.shared
     
-    
     // MARK: Shared Instance
     
     class func sharedInstance() -> FlickrClient {
@@ -51,47 +50,49 @@ class FlickrClient {
         /* 2. Make the request */
         let _ = performRequest(request: request as! NSMutableURLRequest) { (parsedResult, error) in
             
+            func sendError(_ error: String) {
+                let userInfo = [NSLocalizedDescriptionKey : error]
+                completionHandlerSearchPhotos(nil, nil, NSError(domain: "searchPhotos", code: 1, userInfo: userInfo))
+            }
+            
             /* 3. Send the desired value(s) to completion handler */
             if let error = error {
-                completionHandlerSearchPhotos(nil, nil, error)
+                sendError("\(error)")
             } else {
                 
                 /* GUARD: Is the "photos" key in our result? */
                 guard let photosDictionary = parsedResult?[FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-                    // TODO : perform error handling
+                    sendError("Error when parsing result: photos")
                     return
                 }
                 
+                /* Guard: Is the "pages" key in our result? */
                 guard let pageNumberOut = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
+                    sendError("Error when parsing result: pages")
                     return
                 }
                 
                 /* GUARD: Is the "photo" key in photosDictionary? */
                 guard let photosArray = photosDictionary[FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
-                    // TODO : perform error handling
+                    sendError("Error when parsing result: photo")
                     return
                 }
              
-                if photosArray.count == 0 {
-                    // TODO : perform error handling
-                    return
-                } else {
-                    var urlArray = [String]()
+                var urlArray = [String]()
+                
+                for photo in photosArray {
+                    let photoDictionary = photo as [String:Any]
                     
-                    for photo in photosArray {
-                        let photoDictionary = photo as [String:Any]
-                        
-                        /* GUARD: Does our photo have a key for 'url_q'? */
-                        guard let imageUrlString = photoDictionary[FlickrResponseKeys.SquareURL] as? String else {
-                            // TODO : perform error handling
-                            return
-                        }
-                        
-                        urlArray.append(imageUrlString)
+                    /* GUARD: Does our photo have a key for 'url_q'? */
+                    guard let imageUrlString = photoDictionary[FlickrResponseKeys.SquareURL] as? String else {
+                        sendError("Error when parsing result: url_q")
+                        return
                     }
                     
-                     completionHandlerSearchPhotos(urlArray, pageNumberOut, nil)
+                    urlArray.append(imageUrlString)
                 }
+                
+                completionHandlerSearchPhotos(urlArray, pageNumberOut, nil)
             }
         }
  
@@ -104,15 +105,12 @@ class FlickrClient {
         
         let task = session.dataTask(with: request) {data, response, downloadError in
             
-            if let error = downloadError {
-                //completionHandler(imageData: nil, error: newError)
-                // TODO : Handle error
-                print("***** Task Download error")
+            if downloadError != nil {
+                // Do nothing. Task is cancelled.
             } else {
                 completionHandler(data, nil)
             }
         }
-        
         task.resume()
         return task
     }

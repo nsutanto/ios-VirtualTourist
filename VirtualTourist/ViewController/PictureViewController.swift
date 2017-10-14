@@ -14,14 +14,12 @@ extension PictureViewController: UICollectionViewDataSource {
     
     // tell the collection view how many cells to make
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //print("***** Object Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
+        print("***** Object Count = \(fetchedResultsController.sections?[section].numberOfObjects ?? 0)")
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     // make a cell for each cell index path
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        
         
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
