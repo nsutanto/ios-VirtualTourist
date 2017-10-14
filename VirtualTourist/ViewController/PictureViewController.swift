@@ -256,6 +256,13 @@ class PictureViewController: UIViewController {
                                                    pageNumber,
                                                    completionHandlerSearchPhotos: { (result, pageNumberResult, error ) in
             if (error == nil) {
+                // No result. Hide the collection view to show the no collection available label
+                if (result?.count == 0) {
+                    performUIUpdatesOnMain {
+                        self.collectionView.isHidden = true
+                    }
+                }
+                
                 for urlString in result! {
                     let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                     self.selectedLocation.addToLocationToImage(image)
@@ -263,8 +270,7 @@ class PictureViewController: UIViewController {
                 self.totalPageNumber = pageNumberResult!
             }
             else {
-                print("**** Error requesting flickr")
-                // TODO: Perform alert
+                self.alertError("Fail to get images from Flickr")
             }
         })
     }
@@ -295,12 +301,20 @@ class PictureViewController: UIViewController {
     }
     
     // Delete all the existing images
-    func clearImages() {
+    private func clearImages() {
         
         for object in fetchedResultsController.fetchedObjects! {
             coreDataStack?.context.delete(object)
         }
         coreDataStack?.save()
+    }
+    
+    private func alertError(_ alertMessage: String) {
+        performUIUpdatesOnMain {
+            let alert = UIAlertController(title: "Alert", message: alertMessage, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     @IBAction func performPictureAction(_ sender: Any) {
@@ -310,6 +324,8 @@ class PictureViewController: UIViewController {
             // Get new images
             let pageNumberRandom = Int(arc4random_uniform(UInt32(totalPageNumber)))
             print("***** Random number = \(pageNumberRandom) total page number = \(totalPageNumber)")
+            self.collectionView.isHidden = false
+            
             getPhotoFromFlickr(pageNumberRandom)
             performFetch()
             downloadImages()
