@@ -235,7 +235,12 @@ class PictureViewController: UIViewController {
         annotation.coordinate.latitude = selectedLocation.latitude
         annotation.coordinate.longitude = selectedLocation.longitude
         
+        let centerCoordinate = CLLocationCoordinate2D(latitude: selectedLocation.latitude, longitude: selectedLocation.longitude)
+        let spanCoordinate = MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        let region = MKCoordinateRegion(center: centerCoordinate, span: spanCoordinate)
+        
         performUIUpdatesOnMain {
+            self.mapView.setRegion(region, animated: true)
             self.mapView.addAnnotation(annotation)
         }
     }
