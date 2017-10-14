@@ -30,6 +30,15 @@ extension MapViewController: MKMapViewDelegate {
         return pinView
     }
     
+    // Save the region everytime we change the map
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        let defaults = UserDefaults.standard
+        defaults.set(self.mapView.region.center.latitude, forKey: STRING_LATITUDE)
+        defaults.set(self.mapView.region.center.longitude, forKey: STRING_LONGITUDE)
+        defaults.set(self.mapView.region.span.latitudeDelta, forKey: STRING_LATITUDE_DELTA)
+        defaults.set(self.mapView.region.span.longitudeDelta, forKey: STRING_LONGITUDE_DELTA)
+    }
+    
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
         let coordinate = view.annotation?.coordinate
@@ -93,6 +102,12 @@ class MapViewController: UIViewController {
     var onEdit = false
     var locations = [Location]()
     
+    let STRING_LATITUDE = "Latitude"
+    let STRING_LONGITUDE = "Longitude"
+    let STRING_LATITUDE_DELTA = "LatitudeDelta"
+    let STRING_LONGITUDE_DELTA = "LongitudeDelta"
+    let STRING_FIRST_LAUNCH = "FirstLaunch"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -101,6 +116,8 @@ class MapViewController: UIViewController {
         coreDataStack = delegate.stack
         
         mapView.delegate = self
+        
+        initMapSetting()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,6 +127,27 @@ class MapViewController: UIViewController {
         locations.removeAll()
         // reload locations from core data
         loadLocations()
+    }
+    
+    private func initMapSetting() {
+        
+        let defaults = UserDefaults.standard
+        if UserDefaults.standard.bool(forKey: STRING_FIRST_LAUNCH) {
+            let centerLatitude  = defaults.double(forKey: STRING_LATITUDE)
+            let centerLongitude = defaults.double(forKey: STRING_LONGITUDE)
+            let latitudeDelta   = defaults.double(forKey: STRING_LATITUDE_DELTA)
+            let longitudeDelta  = defaults.double(forKey: STRING_LONGITUDE_DELTA)
+            
+            let centerCoordinate = CLLocationCoordinate2D(latitude: centerLatitude, longitude: centerLongitude)
+            let spanCoordinate = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
+            let region = MKCoordinateRegion(center: centerCoordinate, span: spanCoordinate)
+            
+            performUIUpdatesOnMain {
+                self.mapView.setRegion(region, animated: true)
+            }
+        } else {
+            defaults.set(true, forKey: STRING_FIRST_LAUNCH)
+        }
     }
     
     // Get Locations from CoreData
