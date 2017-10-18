@@ -300,7 +300,6 @@ class PictureViewController: UIViewController {
                     }
                 }
             }
-            self.coreDataStack?.save()
         }
     }
     
