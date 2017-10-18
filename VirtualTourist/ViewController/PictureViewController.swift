@@ -24,8 +24,7 @@ extension PictureViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
         performUIUpdatesOnMain {
-            print("***** Start Animating Cell : \(indexPath)")
-            cell.placeHolderView.isHidden = false
+            cell.imageView.image = nil
             cell.activityIndicator.isHidden = false
             cell.activityIndicator.startAnimating()
         }
@@ -36,8 +35,9 @@ extension PictureViewController: UICollectionViewDataSource {
             //print("***** Image binary exist Index path = \(indexPath)")
             
             performUIUpdatesOnMain {
-                cell.placeHolderView.isHidden = true
                 cell.imageView.image = UIImage(data: imageData as Data)
+                cell.activityIndicator.stopAnimating()
+                cell.activityIndicator.isHidden = true
             }
         }
         else {
@@ -49,7 +49,6 @@ extension PictureViewController: UICollectionViewDataSource {
                         cell.imageView.image = UIImage(data: imageData!)
                         cell.activityIndicator.stopAnimating()
                         cell.activityIndicator.isHidden = true
-                        cell.placeHolderView.isHidden = true
                     }
                     
                     image.imageBinary = imageData as NSData?
