@@ -24,25 +24,32 @@ extension PictureViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
         performUIUpdatesOnMain {
+            print("***** Start Animating Cell : \(indexPath)")
+            cell.placeHolderView.isHidden = false
             cell.activityIndicator.isHidden = false
             cell.activityIndicator.startAnimating()
         }
         
         let image = fetchedResultsController.object(at: indexPath)
         
-        if image.imageBinary != nil {
-            print("***** Image binary exist Index path = \(indexPath)")
+        if let imageData = image.imageBinary {
+            //print("***** Image binary exist Index path = \(indexPath)")
+            
             performUIUpdatesOnMain {
-                cell.imageView.image = UIImage(data: image.imageBinary! as Data)
+                cell.placeHolderView.isHidden = true
+                cell.imageView.image = UIImage(data: imageData as Data)
             }
         }
         else {
-            print("***** Image binary DOWNLOAD = \(indexPath)")
+            //print("***** Image binary DOWNLOAD = \(indexPath)")
             // Download image
             let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
                 if (error == nil) {
                     performUIUpdatesOnMain {
                         cell.imageView.image = UIImage(data: imageData!)
+                        cell.activityIndicator.stopAnimating()
+                        cell.activityIndicator.isHidden = true
+                        cell.placeHolderView.isHidden = true
                     }
                     
                     image.imageBinary = imageData as NSData?
@@ -54,10 +61,7 @@ extension PictureViewController: UICollectionViewDataSource {
             })
             cell.taskToCancelifCellIsReused = task
         }
-        performUIUpdatesOnMain {
-            cell.activityIndicator.stopAnimating()
-            cell.activityIndicator.isHidden = true
-        }
+       
         return cell
     }
 }
@@ -67,25 +71,38 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
         // Reset indexes
         insertIndexes.removeAll()
         deleteIndexes.removeAll()
+        updateIndexes.removeAll()
+        
+        // Update UI
+        updateUIWhenDownloadingImage(true)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         // Assigned all the indexes so that we can update the cell accordingly
+       
         switch (type) {
         case .insert:
             insertIndexes.append(newIndexPath!)
         case .delete:
             deleteIndexes.append(indexPath!)
+        case .update:
+            updateIndexes.append(indexPath!)
         default:
             break
         }
     }
     
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         collectionView.performBatchUpdates( {
             self.collectionView.insertItems(at: insertIndexes)
             self.collectionView.deleteItems(at: deleteIndexes)
+            self.collectionView.reloadItems(at: updateIndexes)
         }, completion: nil)
+        
+        
+        // Update UI
+        updateUIWhenDownloadingImage(false)
     }
 }
 
@@ -145,19 +162,20 @@ class PictureViewController: UIViewController {
     @IBOutlet weak var buttonPictureAction: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
-    
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     // Selected Location from previous navigation controller
     var selectedLocation: Location!
     // Core Data Stack
     var coreDataStack: CoreDataStack?
-    // Insert and Delete index for the fetched results controller
+    // Insert, Delete, and Update index for the fetched results controller
     var insertIndexes = [IndexPath]()
     var deleteIndexes = [IndexPath]()
+    var updateIndexes = [IndexPath]()
     // Selected Index is used to delete the pictures
     var selectedIndexes = [IndexPath]()
     // Total page number for flickr. Init to 1 for default. Once we get the first request, we will generate random number.
     var totalPageNumber = 1
+    var currentPageNumber = 1
     // Some String Constant
     let REMOVE_IMAGE = "Remove selected pictures"
     let NEW_COLLECTION = "New Collection"
@@ -244,7 +262,7 @@ class PictureViewController: UIViewController {
     // Mark: Init Photos
     private func initPhotos() {
         if (fetchedResultsController.fetchedObjects?.count == 0) {
-            getPhotoFromFlickr(totalPageNumber)
+            getPhotoFromFlickr(currentPageNumber)
         }
     }
     
@@ -283,6 +301,7 @@ class PictureViewController: UIViewController {
                     }
                 }
             }
+            self.coreDataStack?.save()
         }
     }
     
@@ -315,36 +334,37 @@ class PictureViewController: UIViewController {
         }
     }
     
+    private func updateUIWhenDownloadingImage(_ isDownloading: Bool) {
+        performUIUpdatesOnMain {
+            if isDownloading {
+                self.buttonPictureAction.isEnabled = false
+            } else {
+                self.buttonPictureAction.isEnabled = true
+            }
+        }
+        
+    }
+    
     @IBAction func performPictureAction(_ sender: Any) {
         if (buttonPictureAction.titleLabel?.text == NEW_COLLECTION) {
+            // Disable the button
+            //updateUIWhenDownloadingImage(true)
+            buttonPictureAction.isEnabled = false
             // Delete all images
             clearImages()
             // Get new images
-            let pageNumberRandom = Int(arc4random_uniform(UInt32(totalPageNumber)))
-            print("***** Random number = \(pageNumberRandom) total page number = \(totalPageNumber)")
+            if (currentPageNumber < totalPageNumber) {
+                currentPageNumber = currentPageNumber + 1
+            }
+            else {
+                currentPageNumber = totalPageNumber
+            }
+            
             self.collectionView.isHidden = false
             
-            getPhotoFromFlickr(pageNumberRandom)
-            performFetch()
+            getPhotoFromFlickr(currentPageNumber)
             downloadImages()
-            /*
-            for image in self.fetchedResultsController.fetchedObjects! {
-            //downloadImages()
-            let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
-                if (error == nil) {
-                    performUIUpdatesOnMain {
-                        cell.imageView.image = UIImage(data: imageData!)
-                    }
-                    
-                    image.imageBinary = imageData as NSData?
-                    self.coreDataStack?.save()
-                    
-                } else {
-                    print("***** Download error")
-                }
-            })
-            cell.taskToCancelifCellIsReused = task*/
-            //}
+            
         } else {
             deleteSelectedImage()
         }
