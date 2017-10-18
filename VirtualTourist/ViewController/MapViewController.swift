@@ -66,28 +66,6 @@ extension MapViewController: MKMapViewDelegate {
             vc.selectedLocation = location
             
             self.navigationController?.pushViewController(vc, animated: false)
-            
-            // Search photos
-            //FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in
-                
-              //  if (error == nil) {
-            
-                    /*
-                    for urlString in result! {
-                        let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
-                        location?.addToLocationToImage(image)
-                    }
-                     */
-                    
-                    // Download image
-                    
-                    //performUIUpdatesOnMain {
-                    //    self.navigationController?.pushViewController(vc, animated: false)
-                    //}
-                //}
-                //else {
-                    // TODO: Perform alert
-                //}
         }
     }
 }
@@ -151,7 +129,7 @@ class MapViewController: UIViewController {
     }
     
     // Get Locations from CoreData
-    func loadLocations() {
+    private func loadLocations() {
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         if let result = try? coreDataStack?.context.fetch(request) {
             var annotationsArray = [MKPointAnnotation]()
@@ -170,7 +148,7 @@ class MapViewController: UIViewController {
     }
     
     // Get 1 location from CoreData
-    func getLocation(longitude: Double, latitude: Double) -> Location? {
+    private func getLocation(longitude: Double, latitude: Double) -> Location? {
         var location: Location?
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         
@@ -183,6 +161,23 @@ class MapViewController: UIViewController {
             }
         }
         return location
+    }
+    
+    private func getPhotoFromFlickr(_ pageNumber: Int, _ location: Location) {
+        FlickrClient.sharedInstance().searchPhotos(location.longitude,
+                                                   location.latitude,
+                                                   pageNumber,
+                                                   completionHandlerSearchPhotos: { (result, pageNumberResult, error ) in
+                                                    if (error == nil) {
+                                                        for urlString in result! {
+                                                            let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
+                                                            location.addToLocationToImage(image)
+                                                        }
+                                                    }
+                                                    else {
+                                                        //self.alertError("Fail to get images from Flickr")
+                                                    }
+        })
     }
     
     // MARK : Action
@@ -219,11 +214,8 @@ class MapViewController: UIViewController {
         let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (coreDataStack?.context)!)
         locations.append(location)
         
-        // TODO : Extra bonus. Perform background task to get the download the images immediately
-    }
-    
-    private func fetchImage() {
-        
+        // Fetch flickr
+        getPhotoFromFlickr(1, location)
     }
 }
 

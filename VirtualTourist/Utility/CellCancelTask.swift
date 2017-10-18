@@ -18,7 +18,6 @@ class CellCancelTask : UICollectionViewCell {
         
         didSet {
             if let taskToCancel = oldValue {
-                print("***** Cancel task")
                 taskToCancel.cancel()
             }
         }
