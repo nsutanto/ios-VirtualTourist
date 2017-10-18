@@ -117,38 +117,23 @@
                                                                     <rect key="frame" x="0.0" y="0.0" width="112" height="110"/>
                                                                     <color key="backgroundColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </imageView>
-                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nME-BP-gAC" userLabel="Place Holder View">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="112" height="110"/>
-                                                                    <subviews>
-                                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Isw-kr-Zam">
-                                                                            <rect key="frame" x="46.5" y="45.5" width="20" height="20"/>
-                                                                            <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                                            <color key="color" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                                        </activityIndicatorView>
-                                                                    </subviews>
-                                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                    <constraints>
-                                                                        <constraint firstItem="Isw-kr-Zam" firstAttribute="centerX" secondItem="nME-BP-gAC" secondAttribute="centerX" id="bcq-Xl-RRn"/>
-                                                                        <constraint firstItem="Isw-kr-Zam" firstAttribute="centerY" secondItem="nME-BP-gAC" secondAttribute="centerY" id="e4Z-X2-N6h"/>
-                                                                    </constraints>
-                                                                </view>
+                                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Isw-kr-Zam">
+                                                                    <rect key="frame" x="38" y="37" width="37" height="37"/>
+                                                                    <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                </activityIndicatorView>
                                                             </subviews>
                                                         </view>
                                                         <constraints>
-                                                            <constraint firstItem="nME-BP-gAC" firstAttribute="top" secondItem="poa-qs-aP8" secondAttribute="top" id="8LW-Qb-3f1"/>
+                                                            <constraint firstItem="Isw-kr-Zam" firstAttribute="centerX" secondItem="poa-qs-aP8" secondAttribute="centerX" id="CYm-y2-tNy"/>
                                                             <constraint firstAttribute="bottom" secondItem="poa-qs-aP8" secondAttribute="bottom" id="KGH-A2-JTk"/>
-                                                            <constraint firstItem="nME-BP-gAC" firstAttribute="leading" secondItem="poa-qs-aP8" secondAttribute="leading" id="RxJ-w7-Qor"/>
+                                                            <constraint firstItem="Isw-kr-Zam" firstAttribute="centerY" secondItem="poa-qs-aP8" secondAttribute="centerY" id="QFb-02-umy"/>
                                                             <constraint firstAttribute="trailing" secondItem="poa-qs-aP8" secondAttribute="trailing" id="brm-Kj-YIo"/>
-                                                            <constraint firstItem="nME-BP-gAC" firstAttribute="bottom" secondItem="poa-qs-aP8" secondAttribute="bottom" id="gny-Pf-bBF"/>
-                                                            <constraint firstItem="nME-BP-gAC" firstAttribute="trailing" secondItem="poa-qs-aP8" secondAttribute="trailing" id="hrv-Za-aZO"/>
                                                             <constraint firstItem="poa-qs-aP8" firstAttribute="leading" secondItem="Gg6-aN-AUb" secondAttribute="leading" id="u3A-at-VtX"/>
                                                             <constraint firstItem="poa-qs-aP8" firstAttribute="top" secondItem="Gg6-aN-AUb" secondAttribute="top" id="yl0-BP-c57"/>
                                                         </constraints>
                                                         <connections>
                                                             <outlet property="activityIndicator" destination="Isw-kr-Zam" id="hyM-ar-81L"/>
                                                             <outlet property="imageView" destination="poa-qs-aP8" id="d1V-iP-83K"/>
-                                                            <outlet property="placeHolderView" destination="nME-BP-gAC" id="ynF-cz-IXF"/>
                                                         </connections>
                                                     </collectionViewCell>
                                                 </cells>
