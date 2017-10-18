@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 class PictureCollectionViewCell: CellCancelTask {
 
+    @IBOutlet weak var placeHolderView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 }
