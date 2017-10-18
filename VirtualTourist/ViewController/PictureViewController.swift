@@ -32,8 +32,6 @@ extension PictureViewController: UICollectionViewDataSource {
         let image = fetchedResultsController.object(at: indexPath)
         
         if let imageData = image.imageBinary {
-            //print("***** Image binary exist Index path = \(indexPath)")
-            
             performUIUpdatesOnMain {
                 cell.imageView.image = UIImage(data: imageData as Data)
                 cell.activityIndicator.stopAnimating()
@@ -41,7 +39,6 @@ extension PictureViewController: UICollectionViewDataSource {
             }
         }
         else {
-            //print("***** Image binary DOWNLOAD = \(indexPath)")
             // Download image
             let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
                 if (error == nil) {
