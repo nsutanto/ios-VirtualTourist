@@ -66,28 +66,6 @@ extension MapViewController: MKMapViewDelegate {
             vc.selectedLocation = location
             
             self.navigationController?.pushViewController(vc, animated: false)
-            
-            // Search photos
-            //FlickrClient.sharedInstance().searchPhotos(coordinate!.longitude, coordinate!.latitude, completionHandlerSearchPhotos: { (result, error ) in
-                
-              //  if (error == nil) {
-            
-                    /*
-                    for urlString in result! {
-                        let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
-                        location?.addToLocationToImage(image)
-                    }
-                     */
-                    
-                    // Download image
-                    
-                    //performUIUpdatesOnMain {
-                    //    self.navigationController?.pushViewController(vc, animated: false)
-                    //}
-                //}
-                //else {
-                    // TODO: Perform alert
-                //}
         }
     }
 }
@@ -220,10 +198,6 @@ class MapViewController: UIViewController {
         locations.append(location)
         
         // TODO : Extra bonus. Perform background task to get the download the images immediately
-    }
-    
-    private func fetchImage() {
-        
     }
 }
 
