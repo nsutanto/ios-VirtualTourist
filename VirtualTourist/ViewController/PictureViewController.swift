@@ -41,13 +41,12 @@ extension PictureViewController: UICollectionViewDataSource {
             let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
                 if (error == nil) {
                     performUIUpdatesOnMain {
-                        cell.imageView.image = UIImage(data: imageData!)
+                        // Note : No need to assign the cell image here. The core data save will trigger
+                        // the event to update this cell anyway later.
                         cell.activityIndicator.stopAnimating()
                     }
-                    
                     image.imageBinary = imageData as NSData?
-                    self.coreDataStack?.save()
-                    
+                    // Note : No need to do core data save. This will automatically trigger by fetchresultscontroller. Cool..
                 } else {
                     print("***** Download error")
                 }
