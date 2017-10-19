@@ -62,7 +62,7 @@ extension PictureViewController: UICollectionViewDataSource {
                     }
                    
                     image.imageBinary = imageData as NSData?
-                    // Note : No need to do core data save. This will automatically trigger by fetchresultscontroller. Cool..
+                    self.coreDataStack?.save()
                 } else {
                     print("***** Download error")
                     if (self.downloadCounter > 0) {
