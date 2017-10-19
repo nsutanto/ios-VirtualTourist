@@ -168,15 +168,15 @@ class MapViewController: UIViewController {
                                                    location.latitude,
                                                    pageNumber,
                                                    completionHandlerSearchPhotos: { (result, pageNumberResult, error ) in
-                                                    if (error == nil) {
-                                                        for urlString in result! {
-                                                            let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
-                                                            location.addToLocationToImage(image)
-                                                        }
-                                                    }
-                                                    else {
-                                                        //self.alertError("Fail to get images from Flickr")
-                                                    }
+            if (error == nil) {
+                for urlString in result! {
+                    let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
+                    location.addToLocationToImage(image)
+                }
+            }
+            else {
+                //self.alertError("Fail to get images from Flickr")
+            }
         })
     }
     

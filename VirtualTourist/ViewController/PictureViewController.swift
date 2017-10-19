@@ -25,34 +25,49 @@ extension PictureViewController: UICollectionViewDataSource {
         
         performUIUpdatesOnMain {
             cell.imageView.image = nil
-            cell.activityIndicator.isHidden = false
             cell.activityIndicator.startAnimating()
         }
         
         let image = fetchedResultsController.object(at: indexPath)
         
+        // This should be triggered after download image anyway that the fetchresultscontroller will fire event to update the UI
         if let imageData = image.imageBinary {
+            
             performUIUpdatesOnMain {
                 cell.imageView.image = UIImage(data: imageData as Data)
                 cell.activityIndicator.stopAnimating()
-                cell.activityIndicator.isHidden = true
+                
+                if (self.downloadCounter > 0) {
+                    self.downloadCounter = self.downloadCounter - 1
+                }
+                if self.downloadCounter == 0 {
+                    self.buttonPictureAction.isEnabled = true
+                }
+                
             }
         }
         else {
             // Download image
+            self.downloadCounter = self.downloadCounter + 1
             let task = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
                 if (error == nil) {
+                    
                     performUIUpdatesOnMain {
-                        cell.imageView.image = UIImage(data: imageData!)
+                        // Note : No need to assign the cell image here. The core data save will trigger
+                        // the event to update this cell anyway later.
                         cell.activityIndicator.stopAnimating()
-                        cell.activityIndicator.isHidden = true
+                        if (self.downloadCounter > 0) {
+                            self.buttonPictureAction.isEnabled = false
+                        }
                     }
-                    
+                   
                     image.imageBinary = imageData as NSData?
-                    self.coreDataStack?.save()
-                    
+                    // Note : No need to do core data save. This will automatically trigger by fetchresultscontroller. Cool..
                 } else {
                     print("***** Download error")
+                    if (self.downloadCounter > 0) {
+                        self.downloadCounter = self.downloadCounter - 1
+                    }
                 }
             })
             cell.taskToCancelifCellIsReused = task
@@ -68,9 +83,6 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
         insertIndexes.removeAll()
         deleteIndexes.removeAll()
         updateIndexes.removeAll()
-        
-        // Update UI
-        updateUIWhenDownloadingImage(true)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -88,17 +100,12 @@ extension PictureViewController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         collectionView.performBatchUpdates( {
             self.collectionView.insertItems(at: insertIndexes)
             self.collectionView.deleteItems(at: deleteIndexes)
             self.collectionView.reloadItems(at: updateIndexes)
         }, completion: nil)
-        
-        
-        // Update UI
-        updateUIWhenDownloadingImage(false)
     }
 }
 
@@ -172,6 +179,7 @@ class PictureViewController: UIViewController {
     // Total page number for flickr. Init to 1 for default. Once we get the first request, we will generate random number.
     var totalPageNumber = 1
     var currentPageNumber = 1
+    var downloadCounter = 0
     // Some String Constant
     let REMOVE_IMAGE = "Remove selected pictures"
     let NEW_COLLECTION = "New Collection"
@@ -219,6 +227,9 @@ class PictureViewController: UIViewController {
         initMap()
         // Init Photos
         initPhotos()
+        
+        // Disable refresh button
+        self.buttonPictureAction.isEnabled = false
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -310,6 +321,9 @@ class PictureViewController: UIViewController {
         selectedIndexes.removeAll()
         // core data save. Fetch results controller will magically update the UI
         coreDataStack?.save()
+        
+        // Update UI
+        buttonPictureAction.setTitle(NEW_COLLECTION, for: .normal)
     }
     
     // Delete all the existing images
@@ -327,17 +341,6 @@ class PictureViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
-    }
-    
-    private func updateUIWhenDownloadingImage(_ isDownloading: Bool) {
-        performUIUpdatesOnMain {
-            if isDownloading {
-                self.buttonPictureAction.isEnabled = false
-            } else {
-                self.buttonPictureAction.isEnabled = true
-            }
-        }
-        
     }
     
     @IBAction func performPictureAction(_ sender: Any) {
