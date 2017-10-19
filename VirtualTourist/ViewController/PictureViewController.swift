@@ -174,7 +174,7 @@ class PictureViewController: UIViewController {
     // Selected Index is used to delete the pictures
     var selectedIndexes = [IndexPath]()
     // Total page number for flickr. Init to 1 for default. Once we get the first request, we will generate random number.
-    var totalPageNumber = 1
+    var totalPageNumber : Int = 1
     var currentPageNumber = 1
     var downloadCounter = 0
     // Some String Constant
