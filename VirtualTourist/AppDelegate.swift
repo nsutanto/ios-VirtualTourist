@@ -19,19 +19,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func preloadData() {
         
         // Remove previous stuff (if any)
-        /*
+        
         do {
             try stack.dropAllData()
         } catch {
             print("Error droping all objects in DB")
         }
-        */
+        
+        
     }
     
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // preload data from CoreData
-        preloadData()
+        //preloadData()
         // Start Autosaving
         //stack.autoSave(10)
         return true

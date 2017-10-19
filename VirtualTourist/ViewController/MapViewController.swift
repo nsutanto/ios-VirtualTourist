@@ -64,6 +64,7 @@ extension MapViewController: MKMapViewDelegate {
             let location = self.getLocation(longitude: coordinate!.longitude, latitude: coordinate!.latitude)
             
             vc.selectedLocation = location
+            vc.totalPageNumber = location?.value(forKey: "totalFlickrPages") as! Int
             
             self.navigationController?.pushViewController(vc, animated: false)
         }
@@ -171,11 +172,12 @@ class MapViewController: UIViewController {
             if (error == nil) {
                 for urlString in result! {
                     let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
+                    location.totalFlickrPages = Int32(pageNumberResult!)
                     location.addToLocationToImage(image)
                 }
             }
             else {
-                //self.alertError("Fail to get images from Flickr")
+                print("***** Fail to get photo from flickr")
             }
         })
     }

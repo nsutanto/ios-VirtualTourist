@@ -62,12 +62,9 @@ extension PictureViewController: UICollectionViewDataSource {
                     }
                    
                     image.imageBinary = imageData as NSData?
-                    // Note : No need to do core data save. This will automatically trigger by fetchresultscontroller. Cool..
+                    self.coreDataStack?.save()
                 } else {
                     print("***** Download error")
-                    if (self.downloadCounter > 0) {
-                        self.downloadCounter = self.downloadCounter - 1
-                    }
                 }
             })
             cell.taskToCancelifCellIsReused = task
@@ -177,7 +174,7 @@ class PictureViewController: UIViewController {
     // Selected Index is used to delete the pictures
     var selectedIndexes = [IndexPath]()
     // Total page number for flickr. Init to 1 for default. Once we get the first request, we will generate random number.
-    var totalPageNumber = 1
+    var totalPageNumber : Int = 1
     var currentPageNumber = 1
     var downloadCounter = 0
     // Some String Constant
@@ -302,10 +299,15 @@ class PictureViewController: UIViewController {
         coreDataStack?.performBackgroundBatchOperation { (workerContext) in
             for image in self.fetchedResultsController.fetchedObjects! {
                 if image.imageBinary == nil {
-                    let imageURL = URL(string: image.imageURL!)
-                    if let imageData = try? Data(contentsOf: imageURL!) {
-                        image.imageBinary = imageData as NSData
-                    }
+                    _ = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
+                        
+                        if (error == nil) {
+                            image.imageBinary = imageData as NSData?
+                        }
+                        else {
+                            print("***** Download error")
+                        }
+                    })
                 }
             }
         }
@@ -346,7 +348,6 @@ class PictureViewController: UIViewController {
     @IBAction func performPictureAction(_ sender: Any) {
         if (buttonPictureAction.titleLabel?.text == NEW_COLLECTION) {
             // Disable the button
-            //updateUIWhenDownloadingImage(true)
             buttonPictureAction.isEnabled = false
             // Delete all images
             clearImages()
