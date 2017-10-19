@@ -2,7 +2,7 @@
 //  Location+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Nicholas Sutanto on 10/7/17.
+//  Created by Nicholas Sutanto on 10/19/17.
 //  Copyright © 2017 Nicholas Sutanto. All rights reserved.
 //
 //
@@ -19,6 +19,7 @@ extension Location {
 
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
+    @NSManaged public var totalFlickrPages: Int32
     @NSManaged public var locationToImage: NSSet?
 
 }

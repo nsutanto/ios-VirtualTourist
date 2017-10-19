@@ -46,6 +46,7 @@
 		6BB290B11F89B11E003E1CD1 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		6BB290B21F89B11E003E1CD1 /* Image+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		6BB290B71F89B696003E1CD1 /* Location+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		6BC5F03A1F98D08B004AF26F /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		6BD1D1B71F88636A00E7441A /* PictureCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -416,10 +417,11 @@
 		6B86BF181F8086D700B349D5 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				6BC5F03A1F98D08B004AF26F /* Model 3.xcdatamodel */,
 				6BB290AE1F89B0BD003E1CD1 /* Model 2.xcdatamodel */,
 				6B86BF191F8086D700B349D5 /* Model.xcdatamodel */,
 			);
-			currentVersion = 6BB290AE1F89B0BD003E1CD1 /* Model 2.xcdatamodel */;
+			currentVersion = 6BC5F03A1F98D08B004AF26F /* Model 3.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13241" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Image" representedClassName=".Image" syncable="YES">
+        <attribute name="imageBinary" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="imageToLocation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="locationToImage" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <entity name="Location" representedClassName=".Location" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="totalFlickrPages" optional="YES" attributeType="Integer 32" minValueString="1" defaultValueString="1" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="locationToImage" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="imageToLocation" inverseEntity="Image" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Image" positionX="-54" positionY="-9" width="128" height="88"/>
+        <element name="Location" positionX="-378" positionY="-9" width="128" height="105"/>
+    </elements>
+</model>
