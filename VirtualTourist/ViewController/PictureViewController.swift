@@ -299,10 +299,15 @@ class PictureViewController: UIViewController {
         coreDataStack?.performBackgroundBatchOperation { (workerContext) in
             for image in self.fetchedResultsController.fetchedObjects! {
                 if image.imageBinary == nil {
-                    let imageURL = URL(string: image.imageURL!)
-                    if let imageData = try? Data(contentsOf: imageURL!) {
-                        image.imageBinary = imageData as NSData
-                    }
+                    _ = FlickrClient.sharedInstance().downloadImage(imageURL: image.imageURL!, completionHandler: { (imageData, error) in
+                        
+                        if (error == nil) {
+                            image.imageBinary = imageData as NSData?
+                        }
+                        else {
+                            print("***** Download error")
+                        }
+                    })
                 }
             }
         }
@@ -343,7 +348,6 @@ class PictureViewController: UIViewController {
     @IBAction func performPictureAction(_ sender: Any) {
         if (buttonPictureAction.titleLabel?.text == NEW_COLLECTION) {
             // Disable the button
-            //updateUIWhenDownloadingImage(true)
             buttonPictureAction.isEnabled = false
             // Delete all images
             clearImages()

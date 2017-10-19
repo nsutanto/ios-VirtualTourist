@@ -177,7 +177,7 @@ class MapViewController: UIViewController {
                 }
             }
             else {
-                //self.alertError("Fail to get images from Flickr")
+                print("***** Fail to get photo from flickr")
             }
         })
     }
