@@ -25,7 +25,6 @@ extension PictureViewController: UICollectionViewDataSource {
         
         performUIUpdatesOnMain {
             cell.imageView.image = nil
-            cell.activityIndicator.isHidden = false
             cell.activityIndicator.startAnimating()
         }
         
@@ -35,7 +34,6 @@ extension PictureViewController: UICollectionViewDataSource {
             performUIUpdatesOnMain {
                 cell.imageView.image = UIImage(data: imageData as Data)
                 cell.activityIndicator.stopAnimating()
-                cell.activityIndicator.isHidden = true
             }
         }
         else {
@@ -45,7 +43,6 @@ extension PictureViewController: UICollectionViewDataSource {
                     performUIUpdatesOnMain {
                         cell.imageView.image = UIImage(data: imageData!)
                         cell.activityIndicator.stopAnimating()
-                        cell.activityIndicator.isHidden = true
                     }
                     
                     image.imageBinary = imageData as NSData?
