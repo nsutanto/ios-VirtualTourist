@@ -306,6 +306,9 @@ class PictureViewController: UIViewController {
         selectedIndexes.removeAll()
         // core data save. Fetch results controller will magically update the UI
         coreDataStack?.save()
+        
+        // Update UI
+        buttonPictureAction.setTitle(NEW_COLLECTION, for: .normal)
     }
     
     // Delete all the existing images
@@ -328,6 +331,7 @@ class PictureViewController: UIViewController {
     private func updateUIWhenDownloadingImage(_ isDownloading: Bool) {
         performUIUpdatesOnMain {
             if isDownloading {
+                print("***** Doing Disabling button")
                 self.buttonPictureAction.isEnabled = false
             } else {
                 self.buttonPictureAction.isEnabled = true
