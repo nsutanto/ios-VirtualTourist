@@ -47,13 +47,13 @@ extension MapViewController: MKMapViewDelegate {
             for location in locations {
                 if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
                     
-                    coreDataStack?.context.delete(location)
-                    coreDataStack?.save()
                     let annotationToRemove = view.annotation
-                    
                     performUIUpdatesOnMain {
                         self.mapView.removeAnnotation(annotationToRemove!)
                     }
+                    coreDataStack?.context.delete(location)
+                    coreDataStack?.save()
+                    
                     break
                 }
             }
@@ -207,17 +207,30 @@ class MapViewController: UIViewController {
         let annotation = MKPointAnnotation()
         annotation.coordinate = pressCoordinate
         
-        // Add map annotation
-        performUIUpdatesOnMain {
-            self.mapView.addAnnotation(annotation)
+        let annotations = mapView.annotations
+        
+        var isFound = false
+        for annotationEntry in annotations {
+            if (annotationEntry.coordinate.latitude == pressCoordinate.latitude && annotationEntry.coordinate.longitude == pressCoordinate.longitude) {
+                isFound = true
+                break
+            }
         }
         
-        // Persist the location to the core data
-        let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (coreDataStack?.context)!)
-        locations.append(location)
+        if !isFound {
+            // Add map annotation
+            performUIUpdatesOnMain {
+                self.mapView.addAnnotation(annotation)
+            }
+            
+            // Persist the location to the core data
+            let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (coreDataStack?.context)!)
+            locations.append(location)
+            
+            // Fetch flickr. Let's start with page 1
+            getPhotoFromFlickr(1, location)
+        }
         
-        // Fetch flickr
-        getPhotoFromFlickr(1, location)
     }
 }
 

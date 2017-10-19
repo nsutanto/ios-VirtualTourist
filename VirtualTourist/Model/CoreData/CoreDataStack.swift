@@ -128,7 +128,6 @@ extension CoreDataStack {
         // context). This last one might take some time and is done
         // in a background queue
         context.performAndWait() {
-            
             if self.context.hasChanges {
                 do {
                     try self.context.save()
