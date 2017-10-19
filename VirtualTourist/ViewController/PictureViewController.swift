@@ -65,9 +65,6 @@ extension PictureViewController: UICollectionViewDataSource {
                     self.coreDataStack?.save()
                 } else {
                     print("***** Download error")
-                    if (self.downloadCounter > 0) {
-                        self.downloadCounter = self.downloadCounter - 1
-                    }
                 }
             })
             cell.taskToCancelifCellIsReused = task
