@@ -61,9 +61,8 @@ extension PictureViewController: UICollectionViewDataSource {
                         }
                     }
                    
-                    self.coreDataStack?.context.performAndWait {
+                    self.coreDataStack?.context.perform {
                         image.imageBinary = imageData as NSData?
-                        self.coreDataStack?.save()
                     }
                 } else {
                     print("***** Download error")
@@ -284,9 +283,9 @@ class PictureViewController: UIViewController {
                         self.collectionView.isHidden = true
                     }
                 }
-                
-                for urlString in result! {
-                    self.coreDataStack?.context.perform {
+               
+                self.coreDataStack?.context.perform {
+                    for urlString in result! {
                         let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                         self.selectedLocation.addToLocationToImage(image)
                     }

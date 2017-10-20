@@ -165,7 +165,7 @@ class MapViewController: UIViewController {
             if (error == nil) {
                 for urlString in result! {
                     // https://oleb.net/blog/2014/06/core-data-concurrency-debugging/
-                    self.coreDataStack?.context.performAndWait {
+                    self.coreDataStack?.context.perform {
                         let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
                         location.totalFlickrPages = Int32(pageNumberResult!)
                         location.addToLocationToImage(image)
