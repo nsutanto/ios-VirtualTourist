@@ -22,12 +22,30 @@ extension MapViewController: MKMapViewDelegate {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = false
             pinView!.pinTintColor = .red
+            pinView!.isDraggable = true
         }
         else {
             pinView!.annotation = annotation
         }
         
         return pinView
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
+        switch newState {
+        case .dragging:
+            print("***** Dragging")
+        case .starting:
+            print("***** Starting")
+            view.dragState = .dragging
+            onEdit = false
+            onDelete = false
+        case .ending, .canceling:
+            print("**** Ending")
+            view.dragState = .none
+            onEdit = true
+        default: break
+        }
     }
     
     // Save the region everytime we change the map
@@ -55,7 +73,7 @@ extension MapViewController: MKMapViewDelegate {
                     break
                 }
             }
-        } else {
+        } else if (onDelete) {
             let vc = self.storyboard!.instantiateViewController(withIdentifier: "PictureViewControllerID") as! PictureViewController
             
             // Grab the location object from Core Data
@@ -77,6 +95,7 @@ class MapViewController: UIViewController {
     
     var coreDataStack: CoreDataStack?
     var onEdit = false
+    var onDelete = false
     var locations = [Location]()
     
     let STRING_LATITUDE = "Latitude"
@@ -180,20 +199,35 @@ class MapViewController: UIViewController {
             labelDelete.isHidden = false
             buttonEdit.title = "Done"
             onEdit = true
+            onDelete = false
         }
         else {
             labelDelete.isHidden = true
             buttonEdit.title = "Edit"
             onEdit = false
+            onDelete = true
         }
     }
     
-    @IBAction func onLongPressAction(_ sender: Any) {
+    @IBAction func onLongPressAction(_ sender: UILongPressGestureRecognizer) {
         
-        let lpg = sender as? UILongPressGestureRecognizer
+        let lpg = sender
         
-        let pressPoint = lpg?.location(in: mapView)
-        let pressCoordinate = mapView.convert(pressPoint!, toCoordinateFrom: mapView)
+        let pressPoint = lpg.location(in: mapView)
+        let pressCoordinate = mapView.convert(pressPoint, toCoordinateFrom: mapView)
+        
+        
+        switch (sender.state) {
+        case .began:
+            print("***** Long Press began")
+        case .changed:
+            print("***** Long press changed")
+        case .ended:
+            print("***** Long press ended")
+        default:
+            break
+        }
+        
         
         let annotation = MKPointAnnotation()
         annotation.coordinate = pressCoordinate
