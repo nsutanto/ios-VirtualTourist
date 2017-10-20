@@ -48,9 +48,7 @@ extension MapViewController: MKMapViewDelegate {
                 if location.latitude == (coordinate!.latitude) && location.longitude == (coordinate!.longitude) {
                     
                     let annotationToRemove = view.annotation
-                    performUIUpdatesOnMain {
-                        mapView.removeAnnotation(annotationToRemove!)
-                    }
+                    self.mapView.removeAnnotation(annotationToRemove!)
                     coreDataStack?.context.delete(location)
                     coreDataStack?.save()
                     
@@ -213,9 +211,7 @@ class MapViewController: UIViewController {
         if !isFound {
             
             // Add map annotation
-            performUIUpdatesOnMain {
-                self.mapView.addAnnotation(annotation)
-            }
+            self.mapView.addAnnotation(annotation)
             
             // Persist the location to the core data
             let location = Location(longitude: annotation.coordinate.longitude, latitude: annotation.coordinate.latitude, context: (coreDataStack?.context)!)
