@@ -49,7 +49,7 @@ extension MapViewController: MKMapViewDelegate {
                     
                     let annotationToRemove = view.annotation
                     performUIUpdatesOnMain {
-                        self.mapView.removeAnnotation(annotationToRemove!)
+                        mapView.removeAnnotation(annotationToRemove!)
                     }
                     coreDataStack?.context.delete(location)
                     coreDataStack?.save()
@@ -97,16 +97,9 @@ class MapViewController: UIViewController {
         mapView.delegate = self
         
         initMapSetting()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // clean cached locations first
-        locations.removeAll()
-        // reload locations from core data
         loadLocations()
     }
+    
     
     private func initMapSetting() {
         
@@ -218,6 +211,7 @@ class MapViewController: UIViewController {
         }
         
         if !isFound {
+            
             // Add map annotation
             performUIUpdatesOnMain {
                 self.mapView.addAnnotation(annotation)
