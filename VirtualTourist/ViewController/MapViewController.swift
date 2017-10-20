@@ -156,15 +156,21 @@ class MapViewController: UIViewController {
     }
     
     private func getPhotoFromFlickr(_ pageNumber: Int, _ location: Location) {
+        
         FlickrClient.sharedInstance().searchPhotos(location.longitude,
-                                                   location.latitude,
-                                                   pageNumber,
-                                                   completionHandlerSearchPhotos: { (result, pageNumberResult, error ) in
+                                               location.latitude,
+                                               pageNumber,
+                                               completionHandlerSearchPhotos: { (result, pageNumberResult, error ) in
+    
             if (error == nil) {
                 for urlString in result! {
-                    let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
-                    location.totalFlickrPages = Int32(pageNumberResult!)
-                    location.addToLocationToImage(image)
+                    // https://oleb.net/blog/2014/06/core-data-concurrency-debugging/
+                    self.coreDataStack?.context.performAndWait {
+                        let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
+                        location.totalFlickrPages = Int32(pageNumberResult!)
+                        location.addToLocationToImage(image)
+                    }
+                    
                 }
             }
             else {

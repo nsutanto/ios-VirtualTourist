@@ -61,8 +61,10 @@ extension PictureViewController: UICollectionViewDataSource {
                         }
                     }
                    
-                    image.imageBinary = imageData as NSData?
-                    self.coreDataStack?.save()
+                    self.coreDataStack?.context.performAndWait {
+                        image.imageBinary = imageData as NSData?
+                        self.coreDataStack?.save()
+                    }
                 } else {
                     print("***** Download error")
                 }
@@ -284,8 +286,10 @@ class PictureViewController: UIViewController {
                 }
                 
                 for urlString in result! {
-                    let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
-                    self.selectedLocation.addToLocationToImage(image)
+                    self.coreDataStack?.context.perform {
+                        let image = Image(urlString: urlString, imageData: nil, context: (self.coreDataStack?.context)!)
+                        self.selectedLocation.addToLocationToImage(image)
+                    }
                 }
                 self.totalPageNumber = pageNumberResult!
             }
