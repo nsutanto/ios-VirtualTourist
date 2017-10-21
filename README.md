@@ -9,5 +9,5 @@ Use NSURLSessions to interact with a public restful API
 Create a user interface that intuitively communicates network activity and download progress
 Store media on the device file system Use Core Data for local persistence of an object structure
 
-### Adding Map Pin
-<img src="https://media.giphy.com/media/26Ff6cIIOEZVjfX9e/giphy.gif" width="300">
+### Add and Delete Map Pin
+<img src="https://media.giphy.com/media/26Ff6cIIOEZVjfX9e/giphy.gif" width="300">     <img src="https://media.giphy.com/media/3ohjV0RGllpl69aSg8/giphy.gif" width="300>
