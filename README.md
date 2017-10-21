@@ -10,4 +10,4 @@ Create a user interface that intuitively communicates network activity and downl
 Store media on the device file system Use Core Data for local persistence of an object structure
 
 ### Adding Map Pin
-<iframe src="https://giphy.com/embed/26Ff6cIIOEZVjfX9e" width="360" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/26Ff6cIIOEZVjfX9e">via GIPHY</a></p>
+<img src="https://media.giphy.com/media/26Ff6cIIOEZVjfX9e/giphy.gif" width="600">
