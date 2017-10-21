@@ -14,3 +14,6 @@ Store media on the device file system Use Core Data for local persistence of an 
 
 ### Delete Map Pin
 <img src="https://media.giphy.com/media/3ohjV0RGllpl69aSg8/giphy.gif" width="300">
+
+### Persist Map Pin and User Zoom Level
+
