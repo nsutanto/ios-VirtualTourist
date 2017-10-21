@@ -20,7 +20,7 @@ Store media on the device file system Use Core Data for local persistence of an 
 - Download images, and save to core data at background
 - Update image cell as needed
 - Use FetchResultsController to update the UI if CoreData is updated
-<img src="https://media.giphy.com/media/26Ff1S4AnJuGjf6Tu/giphy.gif" width="300">
+<img src="https://media.giphy.com/media/xUNd9Dr8lTnyIT9Or6/giphy.gif" width="300">
 
 ### Remove Images
 
