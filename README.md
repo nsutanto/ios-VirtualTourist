@@ -22,6 +22,7 @@ Store media on the device file system Use Core Data for local persistence of an 
 - Use FetchResultsController to update the UI if CoreData is updated
 
 <img src="https://media.giphy.com/media/xUNda22g7cgaSjopXy/giphy.gif" width="300">
+<iframe src="https://giphy.com/embed/xUNda22g7cgaSjopXy" width="360" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/xUNda22g7cgaSjopXy">via GIPHY</a></p>
 
 ### Remove Images
 <img src="https://media.giphy.com/media/3ohjUSK8rXNSdvrQQw/giphy.gif" width="300">
