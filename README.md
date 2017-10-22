@@ -26,7 +26,9 @@ Store media on the device file system Use Core Data for local persistence of an 
 ### Remove Images
 <img src="https://media.giphy.com/media/3ohjUSK8rXNSdvrQQw/giphy.gif" width="300">
 
-### Persist Map Pin and User Zoom Level
+### Persist Map Pins
+
+### Persist Zoom Level
 <img src="https://media.giphy.com/media/3o6nV2PkSGgI6w4sms/giphy.gif">
 
 ### Persist Images
