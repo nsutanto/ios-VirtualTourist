@@ -30,3 +30,4 @@ Store media on the device file system Use Core Data for local persistence of an 
 <img src="https://media.giphy.com/media/3o6nV2PkSGgI6w4sms/giphy.gif">
 
 ### Persist Images
+<img src="https://media.giphy.com/media/26Ff79Is1bSrb2kLe/giphy.gif">
