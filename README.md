@@ -33,4 +33,4 @@ Store media on the device file system Use Core Data for local persistence of an 
 <img src="https://github.com/nsutanto/ios-VirtualTourist/blob/master/ImageAndMedia/giphy/giphy-persistZoomLevel.gif" width="300">
 
 ### Persist Images
-<img src="https://media.giphy.com/media/26Ff79Is1bSrb2kLe/giphy.gif">
+<img src="https://github.com/nsutanto/ios-VirtualTourist/blob/master/ImageAndMedia/giphy/giphy-persistImages.gif" width="300">
