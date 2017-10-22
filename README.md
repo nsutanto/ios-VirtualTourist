@@ -17,7 +17,7 @@ Store media on the device file system Use Core Data for local persistence of an 
 
 ### Browse Random Images
 - Use Flickr API
-- Download images, and save to core data at background
+- Asynchronously download images, and perform batch save to core data
 - Update image cell as needed
 - Use FetchResultsController to update the UI if CoreData is updated
 
