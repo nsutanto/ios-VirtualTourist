@@ -21,7 +21,7 @@ Store media on the device file system Use Core Data for local persistence of an 
 - Update image cell as needed
 - Use FetchResultsController to update the UI if CoreData is updated
 
-<img src="https://github.com/nsutanto/ios-VirtualTourist/blob/master/ImageAndMedia/giphy-browseImages.gif" width="300">
+<img src="https://github.com/nsutanto/ios-VirtualTourist/blob/master/ImageAndMedia/giphy/giphy-browseImages.gif" width="300">
 
 ### Remove Images
 <img src="https://media.giphy.com/media/3ohjUSK8rXNSdvrQQw/giphy.gif" width="300">
@@ -30,7 +30,7 @@ Store media on the device file system Use Core Data for local persistence of an 
 <img src="https://media.giphy.com/media/l4EoTt9HYSnoVKQSY/giphy.gif" width="300">
 
 ### Persist Center Map and Zoom Level
-<img src="https://media.giphy.com/media/xT1R9IOzt7YuTtmxEc/giphy.gif" width="300">
+<img src="https://github.com/nsutanto/ios-VirtualTourist/blob/master/ImageAndMedia/giphy/giphy-persistZoomLevel.gif" width="300">
 
 ### Persist Images
 <img src="https://media.giphy.com/media/26Ff79Is1bSrb2kLe/giphy.gif">
